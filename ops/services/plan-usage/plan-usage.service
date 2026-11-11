@@ -1,0 +1,10 @@
+# One plan-usage read for the console (plan-usage.py says why it runs as owner).
+[Unit]
+Description=HQ plan usage for the console
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 -I %h/hq/ops/services/plan-usage/plan-usage.py
+TimeoutStartSec=60

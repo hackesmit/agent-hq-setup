@@ -1,0 +1,8 @@
+[Unit]
+Description=HQ dead-man check for system timers
+
+[Service]
+Type=oneshot
+User=owner
+ExecStart=/home/owner/hq/ops/services/deadman/hq-deadman.sh system
+TimeoutStartSec=120

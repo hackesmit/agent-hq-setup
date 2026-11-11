@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+    :root {
+      --bg: #0a0a0d; --panel: #111116; --panel2: #17171e; --line: #24242e;
+      --ink: #e8e6f0; --mute: #8f8ca3; --faint: #55536a;
+      --accent: #b388ff; --accent-ink: #0a0a0d;
+      --p0: #f0625c; --p1: #e0a63a; --ok: #4fbf7a; --chip: #1d1c27;
+      --mono: "Cascadia Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --capri-ink: #ff9a4d; --capri-glow: #ff7a2c;
+    }
+    a { color: var(--accent); } a:hover { color: #c9a9ff; }
+  </style>
+</helmet>
+
+<div style="width: 760px; box-sizing: border-box; background: #0a0a0d; color: #e8e6f0; font: 14px/1.45 var(--mono); padding: 28px;">
+
+  <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+    <h1 style="margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.01em;">Five things worth building next</h1>
+    <span style="font-size: 12px; color: #55536a;">HQ Console v2</span>
+  </div>
+  <p style="margin: 10px 0 0; font-size: 13px; color: #8f8ca3; max-width: 62ch; text-wrap: pretty;">
+    Thirty ideas were drawn up across five lenses and cut down to these. Each one runs on data the console
+    already collects. Nothing here acts on its own, and nothing widens what the daemon can reach.
+  </p>
+
+  <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 22px;">
+
+    <div style="display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 14px; align-items: start; background: #111116; border: 1px solid #24242e; border-radius: 4px; padding: 14px;">
+      <span style="font-size: 18px; color: #55536a; line-height: 1.1;">1</span>
+      <div style="min-width: 0;">
+        <div style="font-size: 14px; font-weight: 600;">Palette Verbs</div>
+        <div style="font-size: 12px; color: #8f8ca3; margin-top: 4px; text-wrap: pretty;">Cmd-K stops being a jump list and starts running the verbs, with the exact command shown before it fires.</div>
+      </div>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span style="background: rgba(179,136,255,0.2); color: #b388ff; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px;">daily</span>
+        <span style="background: #1d1c27; color: #8f8ca3; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px;">a day</span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 14px; align-items: start; background: #111116; border: 1px solid #24242e; border-radius: 4px; padding: 14px;">
+      <span style="font-size: 18px; color: #55536a; line-height: 1.1;">2</span>
+      <div style="min-width: 0;">
+        <div style="font-size: 14px; font-weight: 600;">Handoff Card</div>
+        <div style="font-size: 12px; color: #8f8ca3; margin-top: 4px; text-wrap: pretty;">The merge gate stops being a raw error blob: diffstat, the worker's own words, the receipt, and the review command.</div>
+      </div>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span style="background: rgba(179,136,255,0.2); color: #b388ff; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px;">daily</span>
+        <span style="background: #1d1c27; color: #8f8ca3; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px;">a day</span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 14px; align-items: start; background: #111116; border: 1px solid #24242e; border-radius: 4px; padding: 14px;">
+      <span style="font-size: 18px; color: #55536a; line-height: 1.1;">3</span>
+      <div style="min-width: 0;">
+        <div style="font-size: 14px; font-weight: 600;">Since You Left</div>
+        <div style="font-size: 12px; color: #8f8ca3; margin-top: 4px; text-wrap: pretty;">A read marker with a horizon line drawn into Activity, so eight hours away becomes six things to read.</div>
+      </div>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span style="background: rgba(179,136,255,0.2); color: #b388ff; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px;">daily</span>
+        <span style="background: rgba(79,191,122,0.15); color: #4fbf7a; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px;">hours</span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 14px; align-items: start; background: #111116; border: 1px solid #24242e; border-radius: 4px; padding: 14px;">
+      <span style="font-size: 18px; color: #55536a; line-height: 1.1;">4</span>
+      <div style="min-width: 0;">
+        <div style="font-size: 14px; font-weight: 600;">Standby</div>
+        <div style="font-size: 12px; color: #8f8ca3; margin-top: 4px; text-wrap: pretty;">When nothing waits, the console dims to a watch face you can read from the doorway. The next request wakes it.</div>
+      </div>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span style="background: rgba(179,136,255,0.2); color: #b388ff; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px;">daily</span>
+        <span style="background: #1d1c27; color: #8f8ca3; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px;">a day</span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 14px; align-items: start; background: #111116; border: 1px solid #24242e; border-radius: 4px; padding: 14px;">
+      <span style="font-size: 18px; color: #55536a; line-height: 1.1;">5</span>
+      <div style="min-width: 0;">
+        <div style="font-size: 14px; font-weight: 600;">Rig Sigils</div>
+        <div style="font-size: 12px; color: #8f8ca3; margin-top: 4px; text-wrap: pretty;">Every rig gets a glyph and a hue, so a wall of interleaved rows becomes scannable without reading a word.</div>
+      </div>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span style="background: rgba(224,166,58,0.15); color: #e0a63a; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px;">delight</span>
+        <span style="background: rgba(79,191,122,0.15); color: #4fbf7a; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px;">hours</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 24px; border-top: 1px solid #24242e; padding-top: 14px; display: flex; gap: 24px; flex-wrap: wrap;">
+    <div style="min-width: 200px;">
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #8f8ca3;">Turned down</div>
+      <div style="font-size: 12px; color: #55536a; margin-top: 6px; line-height: 1.6;">
+        Full-diff browsing (widens what the daemon reads)<br>
+        Away digests (reaches the phone on its own)<br>
+        Swipe-to-answer (makes careless answers faster)
+      </div>
+    </div>
+    <div style="min-width: 200px;">
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #8f8ca3;">Kept on the bench</div>
+      <div style="font-size: 12px; color: #55536a; margin-top: 6px; line-height: 1.6;">
+        Bead Story, one page per bead<br>
+        Hold-to-commit on Kill and Finish<br>
+        Tab title and favicon as an away signal
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":760,"height":700}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

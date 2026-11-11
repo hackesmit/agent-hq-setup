@@ -1,0 +1,21 @@
+# Orchestrator event trigger (hq-4npjr.2, docs/designs/2026-11-04-orchestrator.md section 2).
+# Events, never polling: a new line in events.jsonl (PathChanged) or the pending flag that
+# `orchestrator-run.sh emit` leaves (PathExists, which also re-fires after a run that an
+# event landed during, and once at boot) starts hq-orchestrator.service. No MakeDirectory:
+# systemd would create the watched PathChanged path itself as a directory (review round 1,
+# B1); emit and the runner create state/orchestrator, and systemd watches the nearest parent.
+# Install: ln -sfn ~/hq/ops/services/orchestrator/hq-orchestrator.{path,service,timer} ~/.config/systemd/user/
+#          systemctl --user daemon-reload && systemctl --user enable --now hq-orchestrator.path hq-orchestrator.timer
+#          ~/hq/ops/services/failure-notify/install.sh
+# Revert:  systemctl --user disable --now hq-orchestrator.path && systemctl --user disable --now hq-orchestrator.timer &&
+#          rm ~/.config/systemd/user/hq-orchestrator.*
+[Unit]
+Description=HQ orchestrator event trigger
+
+[Path]
+PathChanged=%h/hq/state/orchestrator/events.jsonl
+PathExists=%h/hq/state/orchestrator/pending
+Unit=hq-orchestrator.service
+
+[Install]
+WantedBy=default.target

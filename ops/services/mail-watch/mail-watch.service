@@ -1,0 +1,19 @@
+# One work inbox watcher cycle (hq-w32vy.2): queue, fetch, context, triage, drafts.
+#
+# Oneshot: all state lives in state/mail/work/. The program handles its own
+# failures (one alert per failure kind, no loop), so there is no OnFailure
+# page on every tick; a crash shows in the log and in systemctl --user status.
+[Unit]
+Description=Work inbox watcher cycle (drafts only, never sends)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/hq/ops/services/mail-watch
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 -m mail_watch.watch
+TimeoutStartSec=1200
+StandardOutput=append:%h/hq/state/mail-watch.log
+StandardError=append:%h/hq/state/mail-watch.log

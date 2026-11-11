@@ -1,0 +1,96 @@
+[Unit]
+# HQ Console v2 terminal runner (node-pty). Owns every PTY, so a console
+# restart or a release switch never hangs up a running worker.
+# Design: docs/superpowers/specs/2026-08-17-console-v2-design.md section 3.
+Description=HQ Console v2 terminal runner
+Documentation=file:///home/owner/hq/ops/console/v2/release/README.md
+Requires=hq-runner.socket
+After=hq-runner.socket
+After=network-online.target
+
+[Service]
+Type=simple
+User=hqconsole
+Group=hqconsole
+
+WorkingDirectory=/var/lib/hqconsole
+
+Environment=NODE_ENV=production
+Environment=CONSOLE_RELEASE_CURRENT=/var/lib/hqconsole/releases/current
+Environment=CONSOLE_STATE_DIR=/var/lib/hqconsole/state
+Environment=CONSOLE_TERM_DIR=/var/lib/hqconsole/term
+Environment=CONSOLE_META_DIR=/var/lib/hqconsole/meta
+Environment=CONSOLE_RUNNER_SOCKET=/run/hqconsole/runner.sock
+Environment=HQ_ROOT=/home/owner/hq
+# The one command the runner is allowed to sudo. Everything it starts as owner
+# goes through this wrapper and nothing else; the sudoers drop-in permits
+# exactly this path.
+Environment=CONSOLE_SPAWN_WRAPPER=/usr/local/lib/hq-console/spawn-as-owner.sh
+Environment=RUNNER_WRAPPER=/usr/local/lib/hq-console/spawn-as-owner.sh
+Environment=RUNNER_WRAPPER_SUDO=1
+Environment=RUNNER_WRAPPER_USER=owner
+Environment=RUNNER_STATE_DIR=/var/lib/hqconsole/state
+Environment=RUNNER_TERM_DIR=/var/lib/hqconsole/term
+Environment=RUNNER_RELEASE_CURRENT=/var/lib/hqconsole/releases/current
+# FIFOs that tmux (as owner) writes into: a world-traversable dir owned by the runner (tmpfiles)
+Environment=RUNNER_FIFO_DIR=/run/hqconsole-panes
+
+# Identity for THIS install (the account, the box, the tailnet name, the owner).
+# Declared LAST on purpose: systemd applies these in order, so the file overrides
+# the defaults above rather than being shadowed by them. The leading dash makes it
+# optional, so a install without the file behaves exactly as it did before.
+EnvironmentFile=-/home/owner/hq/ops/config/site.env
+# Capri, the meta terminal (proposal 19), is ON: the owner enabled it on hqbox and
+# hq-fgg3.16 brought the repo in line. To turn it off, comment the next line and the
+# console flag, then `systemctl daemon-reload` + restart. It is a cage change: read ops/proposals/19-meta-terminal.md first. The
+# passkey store, meta-settings.json and the audit trail must already be provisioned.
+Environment=RUNNER_META_ENABLED=1
+
+ExecStart=/usr/bin/node /var/lib/hqconsole/releases/current/runner/src/runner.js
+
+# The runner is NOT restarted by activation (design: it owns live PTYs). It
+# restarts itself in two phases: advertise `draining`, then exit 0 once it has
+# no sessions. Restart=on-failure plus socket activation is exactly right for
+# that: a clean drain exit leaves the daemon down, the socket stays listening,
+# and the next spawn request from the console starts the new release.
+Restart=on-failure
+RestartSec=2s
+
+# /run/hqconsole is created by tmpfiles.d so the socket unit (which runs as
+# root) can bind inside it. Preserve keeps this unit from deleting the
+# directory out from under a listening socket on stop.
+RuntimeDirectory=hqconsole
+RuntimeDirectoryMode=0750
+RuntimeDirectoryPreserve=yes
+
+# Children live in their own transient systemd scopes started with systemd-run,
+# so they are already outside this unit's cgroup by the time the runner dies.
+# control-group is therefore the correct KillMode and is not over-broad: it
+# kills the daemon and any helper it forgot, not the sessions. Session teardown
+# is an explicit `systemctl stop` of the scope, which is what makes a forked or
+# nohup'd command from an interactive session die with the session.
+KillMode=control-group
+KillSignal=SIGTERM
+TimeoutStopSec=30s
+
+# Needed for the sudo wrapper, same reason as the console unit.
+NoNewPrivileges=no
+
+# DELIBERATELY WEAK SANDBOX, do not "fix" this.
+# A transient scope (systemd-run --scope) registers a process the runner itself
+# forked, so the child inherits this unit's namespaces. Any of ProtectSystem=
+# strict, ProtectHome= or PrivateTmp=yes here would be inherited by every
+# worker and interactive session and would make them unable to write ~/hq or
+# /tmp, which is where all HQ work happens. The runner's containment is the
+# Unix user (hqconsole cannot read owner's things, owner cannot open the
+# runner socket) plus the single-command sudo rule, not unit hardening.
+ProtectSystem=full
+ProtectHome=no
+PrivateTmp=no
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hq-runner
+
+# No [Install] section on purpose: this unit is never enabled. hq-runner.socket
+# is the enabled unit and the runner starts on the first connection to it.

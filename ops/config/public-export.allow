@@ -1,0 +1,88 @@
+# public-export.allow: what hq-public-export.sh may copy into the shareable tree.
+# Only git-tracked files are candidates. A line is a path prefix ("dir/"), an exact
+# path or a glob; "!" excludes; the last matching line wins. Everything not
+# matched stays out. "ok <regex>" lines whitelist a gate hit whose full text
+# matches the regex (generic shapes only, never a client term); "ok@<path> <regex>"
+# holds in that one file only.
+
+# constitution and agent config
+CLAUDE.md
+AGENTS.md
+.claude/settings.json
+.claude/rules/
+!.claude/rules/rigs/
+.claude/skills/vault-writing/
+.agents/skills/beads/
+.codex/
+
+# machinery
+ops/scripts/
+!ops/scripts/posvendor-probe.sh
+!ops/scripts/supabase-key-probe.sh
+!ops/scripts/tests/supabase-key-probe.test.sh
+!ops/scripts/vault-migrate-2026-07-17.sh
+ops/console/
+ops/templates/
+ops/tests/
+ops/githooks/
+ops/install/
+!ops/install/secrets.age
+!ops/install/pack-secrets.sh
+ops/mcp/
+ops/runtimes/
+ops/tmux/
+ops/security/
+ops/share/
+ops/capri/
+ops/.env.example
+ops/config/
+!ops/config/vercel-deploy.json
+ops/services/
+# hq-mail units run ops/mail/hq_mail, which is not exported (hq-an7jw.21)
+!ops/services/hq-mail/
+!ops/services/acme-financial/
+!ops/services/minecraft/
+!ops/services/media/
+!ops/services/db-dumps/targets.tsv
+tests/console-test.sh
+tools/hq-watch/
+tools/capri/
+tools/capri-hands/
+tools/capri-voice/
+
+# design docs that describe the machinery
+docs/designs/
+docs/STACK-MAP.md
+docs/SHARING.md
+
+# gate exceptions: placeholder, vendor and test-fixture values, never a real one
+ok [A-Za-z0-9._%+-]+@example(\.[A-Za-z0-9-]+)+
+ok [A-Za-z0-9._%+:-]+@(x|b|n8n\.example)\.(com|example)?
+ok [A-Za-z0-9._%+-]+@(x|b)\.com
+ok [A-Za-z0-9._%+-]+@mail\.gmail\.com
+ok (noreply@anthropic\.com|no-reply@accounts\.google\.com|notifications@github\.com|MAILER-DAEMON@googlemail\.com|you@proton\.me|git@github\.com)
+ok [A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(service|timer|zst)
+ok [A-Za-z0-9._%+-]+@n8n\.example
+ok sk-(ant-api03-|live-)abcdef[A-Za-z0-9_-]*
+ok 8a477f597d28d172789f06886806bc55
+# the all-zero placeholder number; after a "\n" escape the round 4 Mexican shape matches it from "52" (hq-an7jw.6)
+ok (\+?52 )?000 000 0000
+ok 100\.64\.0\.\d+
+ok (1\.2\.3\.4|100\.1\.2\.3)
+ok exampleprojectref[a-z]{3}\.supabase\.co
+ok (fx|x)\.supabase\.co
+ok postgres\.exampleprojectref[a-z]{3}
+# 10-digit code constants the bare-phone shape hits (hq-an7jw.4): 2^31, 2^31-1, 2^32, 2^33 and 2^31 lookalikes,
+# the year-2100 epoch, Knuth's hash multiplier, and token/byte counts in console test fixtures
+ok (2147483648|2147483647|4294967296|4102444800|2654435761|8280805376|2567356416|7361306761|7591696645)
+ok token=sk-ant-api03-abcdef[A-Za-z0-9_-]*
+ok PASSWORD=hunter2hunter2
+ok (?i:bearer) sk-live-abcdef[A-Za-z0-9_-]*
+# a quoted shell parameter expansion reads an env var, it holds no literal value (round 4 quoted rule, hq-an7jw.6)
+ok TOKEN=["]\$\{KUMA_CONSOLE_PUSH_TOKEN:-\}["]
+# Capri (hq-an7jw.2): an env default naming the token file path, not a value
+ok TOKEN_FILE=["]\$\{CAPRI_TOKEN_FILE:-\$ROOT/AppData/Local/capri-hands/token\}["]
+# "ok@<path> <regex>" holds in that one file only (hq-an7jw.8): CUDA wheel versions in the voice
+# lockfile, and the public commit identity of --push (as the export scrubs it) in the script
+ok@tools/capri-voice/requirements.lock (12\.9\.2\.10|9\.28\.0\.42)
+ok@ops/scripts/hq-public-export.sh 71735134\+your-gh-user@users\.noreply\.github\.com

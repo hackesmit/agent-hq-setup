@@ -1,0 +1,10 @@
+[Unit]
+Description=HQ nightly Supabase dumps (09:10 UTC)
+
+[Timer]
+OnCalendar=*-*-* 09:10:00 UTC
+Persistent=true
+RandomizedDelaySec=5min
+
+[Install]
+WantedBy=timers.target

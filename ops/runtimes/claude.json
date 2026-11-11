@@ -1,0 +1,14 @@
+{
+  "_comment": "Runtime preset: Claude Code, the default. Shape mirrors Gas Town's production AgentPresetInfo (internal/config/agents.go), which runs five vendors through this one record. Inert until proposal 24 teaches spawn.sh/wake.sh/ctl.sh to read it.",
+  "name": "claude",
+  "command": "claude",
+  "headless": { "prompt_flag": "-p", "output_flag": "--output-format stream-json --verbose" },
+  "args": ["--dangerously-skip-permissions", "--strict-mcp-config"],
+  "model_flag": "--model",
+  "models": ["claude-fable-5", "claude-opus-5", "claude-opus-4-8", "claude-opus-4-7", "claude-sonnet-5", "claude-haiku-4-5-20251001"],
+  "process_names": ["node", "claude"],
+  "resume": { "style": "flag", "flag": "--resume", "continue_flag": "--continue" },
+  "instructions_file": "CLAUDE.md",
+  "supports_hooks": true,
+  "notes": "The logical cage (PreToolUse/PostToolUse guards) runs natively. The only runtime allowed redteam/money/auth/data/public beads."
+}

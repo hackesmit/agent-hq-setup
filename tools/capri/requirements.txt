@@ -1,0 +1,11 @@
+# Capri listener venv on George (Python 3.14), from pip freeze 2026-11-05 (hq-95wuo).
+numpy==2.5.4
+pillow==13.0.0
+pystray==0.19.5
+sentencepiece==0.2.2
+sherpa-onnx==2.0.1
+sherpa-onnx-core==2.0.1
+sounddevice==0.5.6
+cffi==2.1.1
+pycparser==3.12
+six==1.17.0

@@ -1,0 +1,7 @@
+# Paths the hqbox restic backup must cover (hq-pgbpq.2). coverage-check.sh
+# fails when one of them is outside include.txt, excluded by exclude.txt, or on
+# another filesystem than its include root (the backup runs --one-file-system).
+/home/owner/hq/state
+/home/owner/hq/.beads/embeddeddolt
+/home/owner/vault
+/home/owner/backups/supabase

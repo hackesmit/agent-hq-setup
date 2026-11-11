@@ -1,0 +1,11 @@
+[Unit]
+Description=HQ worktree and registry reaper (dry plan only, weekly)
+Documentation=file:%h/hq/ops/proposals/41-reap-worktrees/README.md
+
+[Service]
+Type=oneshot
+# Plan only. --apply is never wired into the timer: it stays a manual or console
+# command step until a month of clean plans (bead hq-8hsr.1).
+ExecStart=%h/hq/ops/scripts/reap-worktrees.sh --out %h/hq/state/reaper/latest.txt
+TimeoutStartSec=600
+Nice=10

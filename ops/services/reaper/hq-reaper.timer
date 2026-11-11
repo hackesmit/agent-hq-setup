@@ -1,0 +1,9 @@
+[Unit]
+Description=HQ worktree and registry reaper timer (Fridays 15:30 UTC, before the 16:07 stack review and the 17:37 retro, which read state/reaper/latest.txt)
+
+[Timer]
+OnCalendar=Fri *-*-* 15:30:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

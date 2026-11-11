@@ -1,0 +1,11 @@
+# Rebuildable or cache-only paths left out of the hqbox restic backup.
+/home/owner/.npm
+/home/owner/.cache
+/home/owner/.nvm
+/home/owner/.config/google-chrome-headless
+/home/owner/.config/google-chrome-for-testing
+/var/lib/hqconsole/releases
+node_modules
+.next
+__pycache__
+.venv

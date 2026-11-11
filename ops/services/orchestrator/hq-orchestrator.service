@@ -1,0 +1,13 @@
+# Orchestrator event runner (hq-4npjr.2): one fresh claude -p per new event, under a flock and
+# the daily cap (HQ_ORCH_CAP_USD). Started by hq-orchestrator.path and daily by hq-orchestrator.timer. Install: see the .path file.
+[Unit]
+Description=HQ orchestrator event runner
+After=tmux-hq.service
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=HQ_ROOT=%h/hq
+WorkingDirectory=%h/hq
+ExecStart=/bin/bash %h/hq/ops/scripts/orchestrator-run.sh run
+TimeoutStartSec=4h

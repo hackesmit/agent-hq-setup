@@ -1,0 +1,18 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 760, "h": 700, "title": "The five" },
+    { "file": "PaletteVerbs.dc.html", "x": 840, "y": 0, "w": 720, "h": 1180 },
+    { "file": "HandoffCard.dc.html", "x": 1640, "y": 0, "w": 760, "h": 1400 },
+    { "file": "SinceYouLeft.dc.html", "x": 2480, "y": 0, "w": 860, "h": 900 },
+    { "file": "Standby.dc.html", "x": 3420, "y": 0, "w": 940, "h": 1900 },
+    { "file": "RigSigils.dc.html", "x": 4440, "y": 0, "w": 840, "h": 1080 }
+  ],
+  "annotations": [
+    { "id": "brief", "x": 0, "y": -150, "w": 420, "text": "Five picks out of thirty ideas, drawn against the real signal tokens.\nEverything here runs on data the console already collects." },
+    { "id": "safety", "x": 840, "y": 1230, "w": 400, "text": "The safety state is drawn, not bolted on later: no fuzzy prefix ever resolves to a verb that merges or destroys." },
+    { "id": "gate", "x": 1640, "y": 1450, "w": 400, "text": "This is where invariant 6 lives. Today it renders as a raw error string." },
+    { "id": "marker", "x": 2480, "y": 950, "w": 400, "text": "Cheapest of the five, and the one you would notice on the first morning after a night away." },
+    { "id": "standby-note", "x": 3420, "y": 1950, "w": 400, "text": "Read-only by construction. The first touch is spent waking it, so a blind tap cannot land on a button underneath." }
+  ],
+  "launch": { "view": "canvas" }
+}

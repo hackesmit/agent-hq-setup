@@ -1,0 +1,22 @@
+[Unit]
+Description=HQ Console v2 tailnet TLS certificate renewal schedule
+Documentation=file:///home/owner/hq/ops/console/v2/release/README.md
+
+[Timer]
+Unit=hq-cert-renew.service
+# Two minutes after boot, so a box that was off past the renewal window fixes
+# itself before anyone opens the console. hq-console.service also Wants= the
+# oneshot directly, which covers the same case at start.
+OnBootSec=2min
+# Weekly is far inside the certificate lifetime, so a single failed week never
+# reaches expiry.
+OnCalendar=weekly
+# Persistent, unlike the build timer: a renewal missed while the box was off is
+# worth catching up on immediately, because the cost of a stale certificate is
+# a console nobody can open.
+Persistent=true
+AccuracySec=1h
+RandomizedDelaySec=30min
+
+[Install]
+WantedBy=timers.target

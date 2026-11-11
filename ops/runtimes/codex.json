@@ -1,0 +1,15 @@
+{
+  "_comment": "Runtime preset: OpenAI Codex CLI. Values from Gas Town's production preset. NO hooks layer exists (their source: 'SupportsHooks: false // Use env/files instead'), so the logical cage can never run here.",
+  "name": "codex",
+  "command": "codex",
+  "headless": { "subcommand": "exec", "output_flag": "--json" },
+  "args": ["--dangerously-bypass-approvals-and-sandbox"],
+  "model_flag": "--model",
+  "models": ["gpt-5.6-codex", "gpt-5.6"],
+  "process_names": ["codex"],
+  "resume": { "style": "subcommand", "flag": "resume" },
+  "instructions_file": "AGENTS.md",
+  "supports_hooks": false,
+  "hooks_portable": false,
+  "notes": "Permanently uncaged. Never takes redteam/money/auth/data/public beads; everything reviewed before merge. Same vendor as lucy, so a Codex-authored branch should get its lucy pass from a DIFFERENT vendor (claude reviewer) to keep review cross-vendor."
+}

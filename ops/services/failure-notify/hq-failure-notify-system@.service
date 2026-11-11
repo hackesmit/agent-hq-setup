@@ -1,0 +1,14 @@
+# System-scope failure alert. The 10-onfailure-system.conf drop-in wires it as
+# OnFailure=hq-failure-notify-system@%n.service on every HQ system unit in
+# /etc/systemd/system. It runs as owner so notify.sh finds ~/hq/ops/.env and
+# the tmux socket for the bell. Installed by install.sh.
+[Unit]
+Description=Report a failed HQ system unit (%i)
+
+[Service]
+Type=oneshot
+User=owner
+Group=owner
+Environment=HOME=/home/owner
+Environment=PATH=/home/owner/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/bin/bash /home/owner/hq/ops/services/failure-notify/notify-failure.sh %i system

@@ -1,0 +1,160 @@
+/* HQ Console v2 design tokens.
+
+   ONE direction. Teletype won design round two on 2026-08-20 and the three earlier
+   ones (Signal, Violet, Paper) were removed rather than left switchable: an
+   alternate nobody chooses is a second set of colours to keep correct on every
+   change, and it was already drifting behind this one.
+
+   Because there is only one, its tokens live on :root directly rather than behind
+   a [data-design] attribute. The attribute is still written to <html> so a future
+   second direction has somewhere to hang, but nothing reads it today.
+
+   Teletype is committed dark: it ignores prefers-color-scheme on purpose, because
+   the read depends on a near-black ground and a half-working light version is
+   worse than none.
+
+   Utilities read these through the "@theme inline" block in styles.css. */
+
+:root {
+  --sans: "Segoe UI Variable Text", "Segoe UI", ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  --mono: "Cascadia Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* Teletype's single face. Self-hosted rather than linked: the console's CSP is
+     font-src 'self' data:, so a webfont host would be blocked, correctly. */
+  --teletype-face: "Sometype Mono", "Cascadia Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --gap: 16px;
+}
+
+/* ---------- D Teletype: committed dark, and the accent is paper ----------
+   Chosen 2026-08-20 from design round two. The idea it is built on: a machine that
+   owns no colour of its own. White IS the accent, the texture is tractor feed, and
+   the only colour anywhere on the surface is the three semantic inks plus the
+   categorical ramp, so a severity can never be mistaken for decoration.
+
+   Committed dark like Signal, and for the same reason: the read depends on a
+   near-black ground, so it ignores prefers-color-scheme rather than half-working
+   on white. One face at one width throughout. */
+:root {
+  --bg: #0c0c0b;
+  --panel: #131312;
+  --panel2: #1a1a17;
+  --line: #262521;
+  --ink: #dcd7cb;
+  --mute: #7c7768;
+  --faint: #4e4a42;
+  --accent: #ffffff;
+  --accent2: #dcd7cb;
+  --accent-ink: #111110;
+  --p0: #ff5147;
+  --p1: #e7bd45;
+  --p2: #7c7768;
+  --ok: #6ec988;
+  --warn: #e7bd45;
+  --bad: #ff5147;
+  --chip: #1c1c19;
+  --code: #080807;
+  --term-bg: #080807;
+  --term-ink: #dcd7cb;
+  --shadow: none;
+  --radius: 3px;
+  --face: var(--teletype-face);
+  /* The two glows this direction allows itself: one on a live figure, one on the
+     accent. Nothing else on the surface emits light. */
+  --tt-glow-accent: rgba(255, 255, 255, 0.3);
+  --tt-glow-good: rgba(110, 201, 136, 0.4);
+  /* Tractor feed. The holes are punched in the panel by painting the GROUND colour
+     over it, which is why they read as holes rather than dots. */
+  --tt-feed:
+    radial-gradient(circle 2.2px at 15px 9px, #0c0c0b 0 2.2px, transparent 2.8px),
+    linear-gradient(90deg, transparent 29px, #262521 29px, #262521 30px, transparent 30px);
+  --tt-feed-size: 30px 18px, 100% 100%;
+  --tt-feed-repeat: repeat-y, no-repeat;
+}
+
+/* Flow chart node borders (bead hq-c4pl0.2), one per bead state. Each clears
+   WCAG AA 3:1 for a UI component on --panel2 (#1a1a17): done 8.6, active 6.1,
+   waiting 9.8, blocked 5.4, upcoming 3.9, deferred 3.1 (also drawn dashed).
+   Committed dark, so there is no light set to keep in step. */
+:root {
+  --flow-done: #6ec988;
+  --flow-active: #6f9dc4;
+  --flow-waiting: #e7bd45;
+  --flow-blocked: #ff5147;
+  --flow-upcoming: #7c7768;
+  --flow-deferred: #6c685e;
+  /* hq-c4pl0.7: edges stay quiet but still clear 3:1 on the panel the chart sits
+     on (#131312: 3.3); node faces are a soft panel2 fill with a hairline edge. */
+  --flow-edge: #6c685e;
+  --flow-node: #1a1a17;
+  --flow-node-line: #2a2925;
+  /* legend counts are 11px text, so they need 4.5:1, which --mute misses (4.2) */
+  --flow-label: #8a8576;
+}
+
+/* Chart series tokens, dataviz-validated on this ground. */
+:root {
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+}
+/* Chart series. Three inks on paper rather than three lights, kept clear of the
+   semantic triple so a chart line is never mistaken for a severity.
+
+   Separated by LUMINANCE rather than hue: the first version paired a pale ink with
+   a blue-grey of almost the same brightness, and two series that differ only in hue
+   at the same lightness are hard to tell apart on a dark ground and impossible for
+   a red-green colourblind reader. Deep slate against paper white reads as two
+   different things at a glance, in colour or out of it. */
+:root {
+  --chart-1: #5d7f9e;
+  --chart-2: #ece6d8;
+  --chart-3: #b3835c;
+}
+/* Categorical slices for part-to-whole charts (the money donuts), assigned in
+   this fixed order and never cycled; a tail past six folds into one gray "more".
+   The three chart inks above are separated by luminance, which is right for two
+   or three series but cannot carry six identities. These six are the dataviz
+   reference dark palette, validated on this panel ground (#131312) on 2026-10-06:
+   chroma floor, CVD separation (worst adjacent 8.4), normal-vision floor (19.3)
+   and contrast all pass. Validate again before changing any of them. */
+:root {
+  --cat-1: #3987e5;
+  --cat-2: #d95926;
+  --cat-3: #199e70;
+  --cat-4: #c98500;
+  --cat-5: #d55181;
+  --cat-6: #008300;
+}
+
+/* Teletype ground: the same twelve hues held back to ink-on-paper saturation, so a
+   category mark reads as a coloured ribbon rather than a light source. The three
+   semantic inks stay louder than every one of them on purpose: on this direction a
+   category must never out-shout a severity. */
+:root {
+  --sigil-1: #6f9dc4;
+  --sigil-2: #4fa695;
+  --sigil-3: #6aa87b;
+  --sigil-4: #9aab5f;
+  --sigil-5: #c9a355;
+  --sigil-6: #cc8b5e;
+  --sigil-7: #c47f92;
+  --sigil-8: #b586bd;
+  --sigil-9: #9590cc;
+  --sigil-10: #7f93c4;
+  --sigil-11: #5fa5b5;
+  --sigil-12: #b39a76;
+}
+
+/* Capri (hq-ymxzt.5 board G, hq-ymxzt.6 palette): the corner badge is the ONLY place
+   these colors live. Nothing else may read them; the rest of the console keeps Teletype. */
+:root {
+  --capri: #ff1744;
+  --capri-soft: #ffb4d9;
+  --capri-ground: #100d18;
+  --capri-green: #b6ff00;
+  --capri-cyan: #00d9ff;
+  --capri-pink: #ff2d95;
+  --capri-text: #f5f5f5;
+  --capri-purple: #21152f;
+  --capri-magenta: #8c164f;
+  --capri-muted: #777482;
+}

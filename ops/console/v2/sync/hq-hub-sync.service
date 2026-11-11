@@ -1,0 +1,33 @@
+[Unit]
+Description=HQ hub-sync: hqsync-owned git mirror hub (the only PAT holder on the box)
+Documentation=file:///home/owner/hq/ops/console/v2/sync/hub-sync.sh
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hqsync
+Group=hqsync
+SupplementaryGroups=hqgit
+# root-owned copy installed by the rollout script (hqsync cannot read /home/owner); the source of
+# truth is ops/console/v2/sync/hub-sync.sh in git and the rollout re-installs it
+ExecStart=/usr/bin/env bash /usr/local/lib/hq-console/hub-sync.sh --watch
+Environment=HUB_MIRRORS=/var/lib/hqsync/mirrors
+Environment=HUB_REPOS_CONF=/var/lib/hqsync/repos.conf
+Environment=HUB_CRED_FILE=/var/lib/hqsync/cred/store
+Environment=HUB_LOCK=/run/lock/hqgit/hq-git.lock
+Environment=HUB_HEARTBEAT=/var/lib/hqsync/heartbeat
+Environment=HUB_STATUS=/var/lib/hqsync/status.json
+Environment=HOME=/var/lib/hqsync
+Environment=GIT_TERMINAL_PROMPT=0
+Restart=always
+RestartSec=10
+# hardening: the unit needs /var/lib/hqsync (mirrors, credential store, heartbeat) and the lock dir
+ProtectSystem=strict
+ReadWritePaths=/var/lib/hqsync /run/lock/hqgit
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

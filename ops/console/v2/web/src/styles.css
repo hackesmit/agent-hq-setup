@@ -1,0 +1,1041 @@
+@import "tailwindcss";
+@import "./theme/tokens.css";
+
+/* Sometype Mono, the Teletype direction's single face. Self-hosted: the console
+   serves under font-src 'self' data:, so a webfont host is blocked (correctly), and
+   a silently-missing face would take the whole look with it. One variable file per
+   subset covers 400 to 700, which is every weight the direction uses. */
+@font-face {
+  font-family: "Sometype Mono";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/sometype-mono-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Sometype Mono";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/sometype-mono-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
+    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* "inline" is required: the raw tokens are redefined per data-design on <html>, so the
+   utility must reference var(--panel) at the element being styled, not a copy frozen
+   at :root. With @theme inline, bg-panel compiles to background-color: var(--panel). */
+@theme inline {
+  --color-capri-soft: var(--capri-soft);
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-panel2: var(--panel2);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent2: var(--accent2);
+  --color-accent-ink: var(--accent-ink);
+  --color-chip: var(--chip);
+  --color-code: var(--code);
+  --color-term-bg: var(--term-bg);
+  --color-term-ink: var(--term-ink);
+  --color-p0: var(--p0);
+  --color-p1: var(--p1);
+  --color-p2: var(--p2);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+
+  --font-sans: var(--face);
+  --font-mono: var(--mono);
+
+  --radius-card: var(--radius);
+  --radius-sub: max(2px, calc(var(--radius) - 3px));
+
+  --shadow-card: var(--shadow);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--bg);
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 14px/1.45 var(--face);
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: var(--accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  button {
+    font: inherit;
+  }
+
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+}
+
+@layer components {
+  /* hq-pulse is retired. An infinite attention loop devalues to zero by lunch,
+     so a waiting session now holds a static ring and the finite .hq-call makes
+     the claim once. See the call in the unlayered block below. */
+  .hq-waiting-ring {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--p1) 25%, transparent);
+  }
+
+  /* Capri, the meta terminal. Three layers, only one of which ever moves:
+       1. the ink, --capri-ink, which never changes;
+       2. a halo tracing the letterforms, a static text-shadow, blurred once at raster
+          time and never repainted;
+       3. a wide low ellipse of light behind the word, on a pseudo-element, whose
+          OPACITY breathes on a nine second cycle.
+     The blur lives in step 2 and the animation in step 3, so no frame ever re-runs a
+     gaussian: per frame the compositor changes one alpha on one already rasterised
+     layer. No style recalc, no layout, no paint, no JS.
+
+     isolation:isolate is load-bearing. It makes the word its own stacking context, so
+     z-index:-1 puts the bloom behind its own glyphs but still on top of whatever plate
+     the word sits on; without it the bloom sinks behind the nearest ancestor background
+     and vanishes the moment the word is inside a Chip. The pseudo is out of flow and
+     pointer-events:none, so it cannot change the size of the span, chip, button or rail,
+     and cannot swallow a click. */
+  .hq-capri {
+    position: relative;
+    display: inline-block;
+    isolation: isolate;
+    color: var(--capri-ink);
+    text-shadow: var(--capri-halo);
+  }
+
+  .hq-capri::before {
+    content: "";
+    position: absolute;
+    inset: -0.4em -0.7em;
+    z-index: -1;
+    pointer-events: none;
+    opacity: var(--capri-bloom-rest);
+    background: radial-gradient(
+      var(--capri-bloom-size) at 50% 54%,
+      var(--capri-glow) 0%,
+      color-mix(in srgb, var(--capri-glow) 42%, transparent) 46%,
+      transparent 78%
+    );
+  }
+
+  /* The word mark no longer breathes. Facet is the presence organism, and two
+     ambient loops on one screen compete for the same glance. The ink, the halo
+     and the resting bloom stay: it is the MOTION that stands down. */
+
+  /* Ink and letterform halo only, no bloom and no motion: for a Chip, where a glow
+     inside a colored plate reads as a rendering fault, and for running prose, where a
+     glow mid-sentence reads the same way. content:none means the pseudo is never
+     generated, so there is no invisible layer ticking. */
+  .hq-capri--plain {
+    color: inherit;
+    text-shadow: none;
+  }
+
+  /* ---- Facet: the Capri presence crystal --------------------------------
+   The drawing is canvas (see facet.ts and CapriIndicator.tsx); this is only
+   the box it lives in and the one static form reduced motion falls back to.
+   The rail vessel is the crystal's silhouette at sixteen pixels; the crystal
+   vessel is the full twelve-vertex form. */
+  .hq-facet {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--mute);
+  }
+  .hq-facet[data-phase="offline"] { color: var(--faint); }
+  .hq-facet[data-phase="wake"],
+  .hq-facet[data-phase="listening"],
+  .hq-facet[data-phase="thinking"],
+  .hq-facet[data-phase="speaking"] { color: var(--ink); }
+
+  .hq-facet-rail {
+    display: block;
+    width: 64px;
+    height: 16px;
+    flex: none;
+  }
+  .hq-facet-crystal {
+    display: block;
+    width: 100%;
+    height: 160px;
+  }
+  /* The label sits under the vessel rather than beside it: the rail is 212 pixels
+     and a 64 pixel lozenge leaves about a hundred for "Capri, listening for you",
+     which is not enough, so a row put the tail of the phrase through the border. */
+  .hq-facet--stack {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+  /* Two lines maximum: the heard line is arbitrary text and the rail must not grow
+     with whatever was said. */
+  .hq-facet-label {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    max-width: 100%;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    font-size: 11px;
+    line-height: 1.3;
+  }
+  .hq-facet-text { color: var(--mute); }
+  .hq-facet-wake {
+    margin-left: 0.5rem;
+    padding: 0 0.45rem;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+  }
+  .hq-facet-wake:hover { border-color: var(--ink); }
+  .hq-facet-wake:disabled { opacity: 0.5; cursor: default; }
+
+  .hq-capri--quiet::before,
+  .hq-capri--plain::before {
+    content: none;
+  }
+
+  /* Flow chart (hq-c4pl0.7): title-only nodes with a state accent on the left, a
+     small state dot and, on epics, a thin progress bar. Sans on purpose: two lines of
+     title read faster than mono. Positions come from flow.ts. */
+  .hq-flow-node {
+    position: absolute;
+    display: block;
+    box-sizing: border-box;
+    padding: 9px 22px 9px 14px;
+    overflow: hidden;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 9px;
+    border: 1px solid var(--flow-node-line);
+    background: var(--flow-node);
+    box-shadow: inset 3px 0 0 var(--flow-state);
+    color: var(--ink);
+    font-family: var(--sans);
+    transition: opacity 120ms ease, border-color 120ms ease;
+  }
+  .hq-flow-node:hover,
+  .hq-flow-node[data-lit="on"] { border-color: var(--mute); }
+  .hq-flow-node[data-lit="off"] { opacity: 0.45; }
+  .hq-flow-node[data-critical] { border-color: #3a3832; }
+  .hq-flow-node[data-state="done"] { opacity: 0.55; }
+  .hq-flow-node[data-state="done"][data-lit="on"] { opacity: 0.8; }
+  .hq-flow-node[data-state="deferred"],
+  .hq-flow-node[data-kind="stub"] { border-style: dashed; }
+  .hq-flow-node[data-kind="stub"] { background: transparent; }
+  .hq-flow-node[data-focus] { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .hq-flow-node:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .hq-flow-title {
+    display: block;
+    font-size: 13px;
+    line-height: 18px;
+    max-height: 36px;
+    overflow: hidden;
+  }
+  /* flow.ts wraps on words; a single word wider than the box is the only line that
+     can reach this ellipsis */
+  .hq-flow-title > span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hq-flow-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: 999px;
+  }
+  .hq-flow-node-dot {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--flow-state);
+  }
+  .hq-flow-progress {
+    position: absolute;
+    left: 14px;
+    right: 12px;
+    bottom: 6px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--flow-node-line);
+    overflow: hidden;
+  }
+  .hq-flow-progress > span {
+    display: block;
+    height: 100%;
+    background: var(--flow-done);
+  }
+  .hq-flow-legend {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 4px 14px;
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--flow-label);
+  }
+  .hq-flow-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .hq-flow-toggle {
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--flow-label);
+    cursor: pointer;
+  }
+  .hq-flow-toggle:hover { color: var(--ink); border-color: var(--mute); }
+  .hq-flow-toggle[aria-pressed="true"] { color: var(--ink); border-color: var(--ink); }
+
+  /* Scrollbars inside panels, so the dark ground is not broken by a bright gutter. */
+  .hq-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+  }
+}
+
+/* Unlayered on purpose: these must beat the responsive utilities on the same elements
+   (an unlayered rule wins over any @layer, whatever the specificity). Paper puts the tabs
+   on a top bar at every width instead of a left rail. */
+:root[data-design="paper"] .hq-rail {
+  display: none;
+}
+
+:root[data-design="paper"] .hq-app {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+:root[data-design="paper"] .hq-topbar {
+  display: flex;
+}
+
+/* Phone keeps the bottom bar in every direction. */
+@media (max-width: 767px) {
+  :root[data-design="paper"] .hq-topbar {
+    display: none;
+  }
+}
+
+/* xterm paints into its own container; keep it on the token ground. */
+.hq-term .xterm {
+  padding: 8px;
+}
+
+.hq-term .xterm-viewport {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+/* ---------------------------------------------------------------- sticky notes --
+   A layer of notes pinned over the whole console. The layer is click-through; only
+   the notes themselves take pointer events, so a note can never swallow a button it
+   happens to cover. Colors are mixed against the theme tokens rather than hardcoded,
+   so the same note reads correctly on the dark directions and on light Paper. */
+.hq-notes-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+}
+
+.hq-note {
+  position: fixed;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid color-mix(in srgb, var(--note-ink) 28%, transparent);
+  border-radius: 6px;
+  background: var(--note-bg);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 28%);
+  overflow: hidden;
+}
+
+.hq-note-dragging {
+  box-shadow: 0 12px 28px rgb(0 0 0 / 40%);
+  opacity: 0.96;
+}
+
+.hq-note-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  cursor: grab;
+  background: color-mix(in srgb, var(--note-ink) 12%, transparent);
+  touch-action: none;
+}
+
+.hq-note-dragging .hq-note-bar {
+  cursor: grabbing;
+}
+
+.hq-note-grip {
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--note-ink) 40%, transparent);
+}
+
+.hq-note-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.hq-note-btn {
+  border: 0;
+  background: transparent;
+  color: color-mix(in srgb, var(--note-ink) 70%, transparent);
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.hq-note-btn:hover {
+  background: color-mix(in srgb, var(--note-ink) 14%, transparent);
+  color: var(--note-ink);
+}
+
+.hq-note-text {
+  flex: 1;
+  min-height: 0;
+  resize: none;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--note-ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 6px 8px;
+}
+
+.hq-note-text::placeholder {
+  color: color-mix(in srgb, var(--note-ink) 40%, transparent);
+}
+
+.hq-note-colors {
+  display: flex;
+  gap: 4px;
+  padding: 4px 6px;
+  background: color-mix(in srgb, var(--note-ink) 8%, transparent);
+}
+
+.hq-note-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--note-ink) 30%, transparent);
+  background: var(--note-bg);
+  cursor: pointer;
+}
+
+/* The five papers. Each sets its own ink and ground; the note body reads both. */
+.hq-note-amber {
+  --note-bg: #4a3a12;
+  --note-ink: #f6e2a7;
+}
+.hq-note-green {
+  --note-bg: #163a2a;
+  --note-ink: #b7e8ce;
+}
+.hq-note-blue {
+  --note-bg: #16304a;
+  --note-ink: #b9dcf7;
+}
+.hq-note-pink {
+  --note-bg: #46203a;
+  --note-ink: #f3c2e0;
+}
+.hq-note-slate {
+  --note-bg: #262631;
+  --note-ink: #d5d5e2;
+}
+
+/* Paper is a light direction: real sticky-note paper, dark ink. */
+:root[data-design="paper"] .hq-note-amber {
+  --note-bg: #fdf0b8;
+  --note-ink: #4a3a12;
+}
+:root[data-design="paper"] .hq-note-green {
+  --note-bg: #cdf2dd;
+  --note-ink: #17402e;
+}
+:root[data-design="paper"] .hq-note-blue {
+  --note-bg: #d3e8fb;
+  --note-ink: #17334d;
+}
+:root[data-design="paper"] .hq-note-pink {
+  --note-bg: #fbd8ef;
+  --note-ink: #4a2140;
+}
+:root[data-design="paper"] .hq-note-slate {
+  --note-bg: #e6e6ee;
+  --note-ink: #2b2b36;
+}
+
+:root[data-design="paper"] .hq-note {
+  box-shadow: 0 4px 12px rgb(20 20 30 / 18%);
+}
+
+/* Windows high contrast and friends: the Capri mark is decoration, not information.
+   The danger meaning is carried by the red card border and the literal word "live",
+   both of which survive here. Unlayered on purpose, so it beats the layered rule. */
+@media (forced-colors: active) {
+  .hq-capri {
+    color: CanvasText;
+    text-shadow: none;
+  }
+
+  .hq-capri::before {
+    content: none;
+  }
+}
+
+/* A glow does not print. Print gets the flat mark in the light ink. */
+@media print {
+  .hq-capri {
+    color: #9c4a0a;
+    text-shadow: none;
+  }
+
+  .hq-capri::before {
+    content: none;
+  }
+}
+
+/* ==========================================================================
+   D Teletype: the two materials, and the motion budget for the whole console.
+   ========================================================================== */
+
+/* Tractor feed. Panels get punched holes down the left margin and a single rule
+   where the sprocket strip ends, so a card reads as a torn-off page rather than a
+   box. Painted with the GROUND colour over the panel, which is what makes the
+   holes read as holes. Applied only where a card is wide enough to carry the
+   margin; small chips and pills stay plain. */
+:root[data-design="teletype"] .hq-feed {
+  background-image: var(--tt-feed);
+  background-size: var(--tt-feed-size);
+  background-repeat: var(--tt-feed-repeat);
+  /* Reserve exactly the sprocket strip. The card's own padding then sits to the
+     right of the rule, which is how a real continuous form is laid out, and it
+     means the inner components keep their spacing untouched. */
+  padding-left: 30px;
+}
+
+/* A card narrow enough that a 30px margin would eat it keeps the ink and loses the
+   holes: on a phone the strip costs more than it says. */
+@media (max-width: 560px) {
+  :root[data-design="teletype"] .hq-feed {
+    background-image: none;
+    padding-left: 0;
+  }
+}
+
+/* The perforated tear-off strip, used as a section separator. */
+:root[data-design="teletype"] .hq-perf {
+  height: 7px;
+  background: radial-gradient(circle 2px at 8px 3.5px, #2e2d28 0 2px, transparent 2.6px) 0 0 / 18px 7px repeat-x;
+}
+
+/* This direction allows itself exactly two glows: a live figure and the accent.
+   Everything else on the surface is ink. */
+:root[data-design="teletype"] .hq-fig-live {
+  text-shadow: 0 0 18px var(--tt-glow-good);
+}
+:root[data-design="teletype"] .hq-fig-accent {
+  text-shadow: 0 0 18px var(--tt-glow-accent);
+}
+
+/* ---------- motion ----------
+   One budget for the console, not per-component flourishes. Three rules:
+   nothing moves that the operator did not cause or that did not just change;
+   nothing animates longer than a glance; every one of them is off under
+   prefers-reduced-motion, including the ambient ones. */
+
+/* The motion ladder: octaves of ninety. If a duration is not on this ladder it
+   does not belong in the console. Acts first, then states. Curves are four, and
+   there are no springs: an exit is its entrance reversed. */
+:root {
+  --t-touch:    90ms;   /* feedback: press, toggle, caret          */
+  --t-shift:   180ms;   /* property: colour, fade, hover-off, tick */
+  --t-move:    360ms;   /* travel: arrive, depart, disclose        */
+  --t-scene:   720ms;   /* whole surface: wake, digest, pane swap  */
+  --t-call:   1440ms;   /* one attention ring; three rings max     */
+  --t-breathe:2880ms;   /* ambient liveness, budgeted              */
+  --t-drift:  5760ms;   /* the slow field: standby, sediment       */
+  --stagger:    45ms;   /* batch spacing; compress past 9 items    */
+
+  --ease-arrive: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-depart: cubic-bezier(0.8, 0, 0.8, 0.2);
+  --ease-move:   cubic-bezier(0.45, 0.05, 0.15, 1);
+  --ease-loop:   ease-in-out;
+  /* the console's previous single curve, absorbed so older rules keep working */
+  --ease-out: var(--ease-arrive);
+}
+
+/* A figure that changed since the last poll ticks over rather than swapping.
+   Applied by the component when the value actually differs, so a re-render with
+   the same number is silent. */
+@keyframes hq-tick {
+  0% { transform: translateY(-0.32em); opacity: 0; }
+  55% { opacity: 1; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.hq-tick {
+  animation: hq-tick var(--t-shift) var(--ease-arrive);
+}
+
+/* A row arriving in a lane: it comes from where it belongs, not from nowhere. */
+@keyframes hq-arrive {
+  from { transform: translateY(-6px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.hq-arrive {
+  animation: hq-arrive var(--t-move) var(--ease-arrive);
+}
+
+/* A collapsible project opening. Height is not animated (it thrashes layout on a
+   list this size); the contents fade and settle instead. */
+@keyframes hq-unfold {
+  from { transform: translateY(-4px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.hq-unfold {
+  animation: hq-unfold var(--t-move) var(--ease-arrive);
+}
+
+/* Press feedback on anything that dispatches work. Deliberately understated:
+   this is the gesture that spends money and starts a session. */
+.hq-press {
+  transition:
+    transform var(--t-touch) var(--ease-arrive),
+    background-color var(--t-shift) var(--ease-arrive),
+    border-color var(--t-shift) var(--ease-arrive),
+    opacity var(--t-shift) var(--ease-arrive);
+}
+.hq-press:active {
+  transform: translateY(1px);
+}
+
+/* Set-piece 2: a question ages. The ladder is STATE, not a loop. A card that
+   pulses for four hours is furniture by minute ten, so urgency accumulates in
+   the surface and the border while motion spends only at the crossings. Under
+   reduced motion this is unchanged, because there was never much motion in it. */
+.hq-aged--t1 {
+  /* the age chip appears; the card itself does not change */
+}
+.hq-aged--t2 {
+  background: var(--panel2);
+  border-color: color-mix(in srgb, var(--p1) 45%, var(--line));
+}
+.hq-aged--t3 {
+  background: var(--panel2);
+  border-color: color-mix(in srgb, var(--p0) 60%, var(--line));
+  box-shadow: inset 2px 0 0 0 var(--p0);
+}
+.hq-age-chip {
+  font-variant-numeric: tabular-nums;
+  color: var(--mute);
+}
+.hq-aged--t2 .hq-age-chip { color: var(--p1); }
+.hq-aged--t3 .hq-age-chip { color: var(--p0); }
+
+/* Repetition decays, per event type per surface (see app/choreography.ts). The
+   first arrival of a kind moves and fades; one soon after only fades; one hard
+   on its heels does not move at all and is simply marked. The four hundredth
+   arrival of an afternoon must not shout like the first. */
+.hq-arrive[data-decay="quiet"] {
+  animation-name: hq-fade;
+}
+.hq-arrive[data-decay="mark"] {
+  animation: none;
+  box-shadow: inset 2px 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent);
+}
+@keyframes hq-fade {
+  from { opacity: 0; }
+}
+
+/* A batch is one event with n bodies: reading order, one stagger step apart,
+   set by the component from the plan in choreography.ts. */
+.hq-arrive {
+  animation-delay: var(--hq-delay, 0ms);
+}
+
+/* Leaving is arriving reversed, on the mirrored curve, so a row that came from
+   above goes back the way it came. */
+@keyframes hq-depart {
+  to { opacity: 0; transform: translateY(-6px); }
+}
+.hq-depart {
+  animation: hq-depart var(--t-move) var(--ease-depart) forwards;
+}
+
+/* A caret, for anything that types. Hard on, hard off: a fading caret reads as
+   a rendering fault. */
+@keyframes hq-caret {
+  0%, 49.9% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.hq-caret {
+  animation: hq-caret calc(var(--t-touch) * 12) steps(1, end) infinite;
+}
+
+/* A checkbox confirming. The tick draws rather than appearing. */
+@keyframes hq-draw {
+  from { stroke-dashoffset: 14; }
+  to { stroke-dashoffset: 0; }
+}
+.hq-draw path {
+  stroke-dasharray: 14;
+  animation: hq-draw var(--t-scene) var(--ease-move) forwards;
+}
+
+/* The one ambient motion in the console: a live session's marker breathes, so a
+   glance tells you something is running without reading a number. Slow enough
+   that it never pulls the eye during work. */
+@keyframes hq-breathe {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+.hq-live-dot {
+  animation: hq-breathe var(--t-breathe) var(--ease-loop) infinite;
+}
+
+/* The call: the console's ONLY attention claim, and it is finite by construction.
+   A ring expands out of the element three times and stops. An infinite pulse is
+   wallpaper by lunchtime, which is why hq-pulse was retired in favour of this.
+   One claim per batch, never one per item. */
+@keyframes hq-call {
+  0%   { transform: scale(0.5); opacity: 0.85; }
+  80%  { opacity: 0; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+.hq-call {
+  position: relative;
+}
+.hq-call::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  animation: hq-call var(--t-call) var(--ease-arrive) 3;
+}
+
+/* Reduced motion SWAPS movement for marks. It never removes the information:
+   an arrival still says it is new, and a call still says it wants the owner, they
+   just say it by standing still and being marked instead of by moving. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-touch: 0ms; --t-shift: 0ms; --t-move: 0ms; --t-scene: 0ms;
+    --t-call: 0ms; --t-breathe: 0ms; --t-drift: 0ms; --stagger: 0ms;
+  }
+
+  .hq-tick,
+  .hq-arrive,
+  .hq-unfold,
+  .hq-depart,
+  .hq-caret,
+  .hq-draw path,
+  .hq-live-dot {
+    animation: none;
+  }
+
+  /* the call stops ringing and becomes a doubled edge that simply stays */
+  .hq-call::after {
+    animation: none;
+    inset: -3px;
+    border-width: 2px;
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  /* an arrival that cannot move is marked instead */
+  .hq-arrive,
+  .hq-new,
+  .hq-arrive[data-decay="mark"] {
+    box-shadow: inset 2px 0 0 0 var(--accent);
+  }
+
+  /* no batch is staggered when nothing moves: it would only delay the marks */
+  .hq-arrive { animation-delay: 0ms; }
+
+  .hq-press {
+    transition: none;
+  }
+
+  .hq-press:active {
+    transform: none;
+  }
+}
+
+/* Terminal attention (the owner, 2026-10-20, mockup A): a pane that needs the owner breathes
+   an amber ring, a working pane runs a thin line along its top edge, an idle pane
+   stands still. This is a deliberate exception to the retired-pulse rule above:
+   the owner asked for a loop because he does not read the Needs-you panel, and the loop
+   stops the moment he clicks the pane, so it never becomes wallpaper. */
+@keyframes hq-attn-breathe {
+  0%, 100% { box-shadow: 0 0 0 1px var(--p1), 0 0 0 0 color-mix(in srgb, var(--p1) 0%, transparent); }
+  50%      { box-shadow: 0 0 0 1px var(--p1), 0 0 22px 4px color-mix(in srgb, var(--p1) 38%, transparent); }
+}
+@keyframes hq-attn-scan {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+@keyframes hq-attn-ping {
+  0%   { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+.hq-attn-ring {
+  border-color: var(--p1);
+  animation: hq-attn-breathe 2.4s ease-in-out infinite;
+}
+/* Finished and killable (cueOf): a steady red border, no animation, until new work starts. */
+.hq-done-ring {
+  border-color: var(--bad);
+  box-shadow: inset 0 0 0 1px var(--bad);
+}
+.hq-attn-scan {
+  position: relative;
+  height: 2px;
+  overflow: hidden;
+  background: var(--panel2);
+}
+.hq-attn-scan::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 25%;
+  background: var(--ok);
+  animation: hq-attn-scan 1.8s linear infinite;
+}
+.hq-attn-ping {
+  position: relative;
+}
+.hq-attn-ping::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: var(--p1);
+  animation: hq-attn-ping 1.6s ease-out infinite;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  /* still says it, standing still: a solid doubled amber edge, a solid green line */
+  .hq-attn-ring { animation: none; box-shadow: 0 0 0 2px var(--p1); }
+  .hq-attn-scan::after { animation: none; width: 100%; opacity: 0.6; }
+  .hq-attn-ping::after { animation: none; transform: scale(1.8); opacity: 0.35; }
+}
+
+/* Capri listening (hq-ymxzt.2): four sound bars on the orchestrator pane. */
+.hq-capri-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+.hq-capri-bars i {
+  width: 3px;
+  height: 100%;
+  border-radius: 1px;
+  background: var(--p0);
+  transform-origin: bottom;
+  animation: hq-capri-bar 0.9s ease-in-out infinite;
+}
+.hq-capri-bars i:nth-child(2) { animation-delay: -0.3s; }
+.hq-capri-bars i:nth-child(3) { animation-delay: -0.6s; }
+.hq-capri-bars i:nth-child(4) { animation-delay: -0.15s; }
+@keyframes hq-capri-bar {
+  0%, 100% { transform: scaleY(0.3); }
+  50%      { transform: scaleY(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hq-capri-bars i { animation: none; transform: scaleY(0.7); }
+}
+
+/* Capri corner (hq-ymxzt.5, board G). Fixed bottom-right, above the mobile Capri
+   strip and tab bar below md. Every moving part is here so reduced motion stills
+   all of them at once. */
+.hq-capri-corner { bottom: calc(var(--hq-tabbar-h, 44px) + 44px); transition: transform 0.25s ease; }
+@media (min-width: 768px) { .hq-capri-corner { bottom: 16px; } }
+/* Square capri.exe window with a turning neon ring (board H, hq-ymxzt.8). The badge is
+   the ring: 2px of padding shows a turning conic gradient (red, pink, cyan), the window
+   inside is the ground color with a thin title bar (capri.exe left, state right) over
+   the owner's frame. The state glow is a box-shadow on the ring; listening pulses it. */
+@property --hq-capri-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.hq-capri-badge {
+  width: var(--hq-capri-size, 100px);
+  padding: 2px;
+  border-radius: 6px;
+  background: conic-gradient(from var(--hq-capri-a), var(--capri), var(--capri-pink), var(--capri-cyan), var(--capri));
+  box-shadow: 0 0 8px rgba(255, 23, 68, 0.4);
+  animation: hq-capri-turn 6s linear infinite;
+  transition: box-shadow 0.4s ease;
+}
+.hq-capri-badge[data-mood="listening"] { animation: hq-capri-turn 3s linear infinite, hq-capri-pulse 1.2s ease-in-out infinite; }
+.hq-capri-badge[data-mood="thinking"] { box-shadow: 0 0 12px rgba(182, 255, 0, 0.6); animation-duration: 2s; }
+.hq-capri-badge[data-mood="speaking"] { box-shadow: 0 0 16px rgba(255, 45, 149, 0.8); animation-duration: 1.5s; }
+.hq-capri-window { background-color: var(--capri-ground); border-radius: 4px; overflow: hidden; }
+.hq-capri-bar { cursor: move; touch-action: none; user-select: none; height: 16px; font-size: 9px; color: var(--capri-soft); background-color: #21152f; }
+.hq-capri-exe { color: var(--capri-text); }
+.hq-capri-state { color: var(--capri-cyan); margin-left: auto; }
+.hq-capri-gear { font-size: 10px; line-height: 1; color: var(--capri-soft); background: none; border: 0; padding: 0 1px; cursor: pointer; }
+.hq-capri-gear:hover, .hq-capri-gear:focus-visible { color: var(--capri-cyan); outline: none; }
+.hq-capri-frame { background: none; border: 0; padding: 0; width: 100%; height: calc(var(--hq-capri-size, 100px) - 8px); }
+/* resize grip (hq-ymxzt.9): top-left, since the box grows up and left from its corner */
+.hq-capri-grip { position: absolute; top: -4px; left: -4px; width: 12px; height: 12px; cursor: nwse-resize; touch-action: none; border-top: 2px solid var(--capri-cyan); border-left: 2px solid var(--capri-cyan); border-radius: 3px 0 0 0; opacity: 0; transition: opacity 0.2s ease; }
+.hq-capri-badge:hover .hq-capri-grip, .hq-capri-grip:active { opacity: 1; }
+.hq-capri-corner[data-placed] { transition: none; }
+.hq-capri-frame:focus-visible { outline: 2px solid var(--capri-cyan); outline-offset: 2px; }
+.hq-capri-frame[data-mood="thinking"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 35%, rgba(182, 255, 0, 0.45) 50%, transparent 65%);
+  background-size: 250% 100%;
+  animation: hq-capri-sweep 1.6s linear infinite;
+  pointer-events: none;
+}
+.hq-capri-inner {
+  background-color: var(--capri-ground);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.hq-capri-panel { background-color: var(--capri-ground); border: 1px solid var(--capri); box-shadow: 0 0 24px -10px rgba(255, 23, 68, 0.6); }
+.hq-capri-zone { background-color: #21152f; border: 1px dashed var(--capri-soft); }
+.hq-capri-zone[data-over="true"] { border-color: var(--capri-cyan); box-shadow: 0 0 10px rgba(0, 217, 255, 0.5); }
+.hq-capri-pick { color: var(--capri-cyan); background: none; border: 0; cursor: pointer; }
+.hq-capri-pick:disabled { opacity: 0.5; cursor: default; }
+.hq-capri-thumb img { border: 1px solid var(--capri-soft); }
+.hq-capri-x { background-color: var(--capri); color: var(--capri-text); border: 0; border-radius: 50%; cursor: pointer; }
+.hq-capri-bubble {
+  background-color: var(--capri-ground);
+  border: 1px solid var(--capri);
+  box-shadow: 0 0 24px -10px rgba(255, 23, 68, 0.6);
+  color: var(--capri-text);
+  animation: hq-capri-rise 0.35s ease;
+}
+.hq-capri-img { animation: hq-capri-fade 0.22s ease; }
+@keyframes hq-capri-fade { from { opacity: 0.15; } to { opacity: 1; } }
+.hq-capri-scanlines {
+  background: repeating-linear-gradient(to bottom, rgba(16, 13, 24, 0) 0 2px, rgba(16, 13, 24, 0.28) 2px 3px);
+}
+/* No frames loaded yet: a small red dot, never a drawn character. */
+.hq-capri-dot { border-radius: 2px; background-color: var(--capri); animation: hq-capri-dot 1.8s ease-in-out infinite; }
+@keyframes hq-capri-dot { 0%, 100% { opacity: 0.55; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.1); } }
+@keyframes hq-capri-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes hq-capri-turn { to { --hq-capri-a: 360deg; } }
+@keyframes hq-capri-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(0, 217, 255, 0.45); }
+  50% { box-shadow: 0 0 16px rgba(0, 217, 255, 0.95); }
+}
+@keyframes hq-capri-sweep { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .hq-capri-corner, .hq-capri-badge { transition: none; }
+  .hq-capri-badge, .hq-capri-badge[data-mood], .hq-capri-frame::after, .hq-capri-bubble, .hq-capri-dot, .hq-capri-img { animation: none; }
+  .hq-capri-badge[data-mood="listening"] { box-shadow: 0 0 10px rgba(0, 217, 255, 0.8); }
+}
+
+/* ---------- folding sections (ui/Fold.tsx, hq-4npjr.17) ---------- */
+/* A folded card shows only its head; the body stays mounted, just hidden. */
+.hq-card[data-folded] > :not(.hq-card-head) {
+  display: none;
+}
+.hq-card[data-folded] > .hq-card-head {
+  border-bottom-color: transparent;
+}
+.hq-chev {
+  display: inline-block;
+  width: 0.9em;
+  transition: transform 120ms ease;
+}
+.hq-chev-closed {
+  transform: rotate(-90deg);
+}
+/* The orchestrator terminal's bottom edge: drag it to resize the box. */
+.hq-resize-handle {
+  height: 10px;
+  cursor: ns-resize;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hq-resize-handle::before {
+  content: "";
+  width: 48px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line);
+}
+.hq-resize-handle:hover::before,
+.hq-resize-handle:focus-visible::before,
+.hq-resize-handle[data-dragging]::before {
+  background: var(--accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hq-chev {
+    transition: none;
+  }
+}
+
+/* a file is being dragged over a terminal pane */
+.hq-term[data-dropping] {
+  outline: 2px dashed var(--p0);
+  outline-offset: -4px;
+}

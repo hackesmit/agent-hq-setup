@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+    a { color: #b388ff; } a:hover { color: #c9a9ff; }
+    .pv-dialog { background: #111116; border: 1px solid #24242e; border-radius: 4px; overflow: hidden; }
+    .pv-input { padding: 12px 14px; border-bottom: 1px solid #24242e; font-size: 14px; }
+    .pv-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 8px 14px; }
+    .pv-sel { background: #17171e; box-shadow: inset 2px 0 0 #b388ff; }
+    .pv-hint { font-size: 11px; color: #55536a; white-space: nowrap; }
+    .pv-sec { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #55536a; padding: 10px 14px 4px; border-top: 1px solid #24242e; }
+    .pv-cmd { font-size: 11px; color: #8f8ca3; background: #000; border-top: 1px solid #24242e; padding: 9px 14px; overflow-wrap: anywhere; }
+    .pv-state { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #8f8ca3; }
+    .pv-note { font-size: 12px; color: #8f8ca3; text-wrap: pretty; }
+  </style>
+</helmet>
+
+<div style="width: 720px; box-sizing: border-box; background: #0a0a0d; color: #e8e6f0; font: 14px/1.45 'Cascadia Mono', 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; padding: 26px; display: flex; flex-direction: column; gap: 26px;">
+
+  <div>
+    <h1 style="margin: 0; font-size: 18px; font-weight: 600;">Palette Verbs</h1>
+    <p class="pv-note" style="margin: 8px 0 0; max-width: 60ch;">
+      Cmd-K already knows every request, bead and session on screen. Today it only jumps between tabs. Here it runs
+      the same verbs the panels run, and shows the command it is about to fire.
+    </p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="pv-state">1 &nbsp;the list, nothing typed</div>
+    <div class="pv-dialog">
+      <div class="pv-input" style="color: #55536a;">Jump to a tab, a bead, a session</div>
+      <div class="pv-row"><span>Now</span><span class="pv-hint">tab, key 1</span></div>
+      <div class="pv-row"><span>Projects</span><span class="pv-hint">tab, key 2</span></div>
+      <div class="pv-sec">Actions</div>
+      <div class="pv-row pv-sel">
+        <span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Dispatch xd-207 to acme-dashboard</span>
+        <span class="pv-hint">ready, P1, redteam</span>
+      </div>
+      <div class="pv-row">
+        <span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Answer r-3f2a, chesski asks about Stockfish depth</span>
+        <span class="pv-hint">P1, waiting 41m</span>
+      </div>
+      <div class="pv-row">
+        <span>Open terminal js-4</span>
+        <span class="pv-hint">gym-tracker, waiting</span>
+      </div>
+      <div class="pv-cmd">ctl.sh dispatch xd-207 --rig acme-dashboard --model claude-opus-4-8</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="pv-state">2 &nbsp;a bead id, and the model is one keystroke</div>
+    <div class="pv-dialog">
+      <div class="pv-input">xd-207</div>
+      <div class="pv-row pv-sel" style="align-items: start; padding-top: 12px; padding-bottom: 12px;">
+        <div style="min-width: 0;">
+          <div>Dispatch xd-207 to acme-dashboard</div>
+          <div style="font-size: 12px; color: #8f8ca3; margin-top: 3px;">Avance app: sync the design card with the tema preset</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="background: rgba(179,136,255,0.2); color: #b388ff; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px;">opus-4-8</span>
+          <span class="pv-hint">Tab</span>
+        </div>
+      </div>
+      <div style="padding: 0 14px 12px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+        <span style="font-size: 11px; color: #55536a;">cycle</span>
+        <span style="font-size: 11px; color: #e8e6f0;">opus-4-8</span>
+        <span style="font-size: 11px; color: #55536a;">opus-4-7</span>
+        <span style="font-size: 11px; color: #55536a;">sonnet-5</span>
+        <span style="font-size: 11px; color: #e0a63a; margin-left: auto;">labels say redteam, routing says size up</span>
+      </div>
+      <div class="pv-cmd">ctl.sh dispatch xd-207 --rig acme-dashboard --model claude-opus-4-8</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="pv-state">3 &nbsp;answering the worker that is blocked</div>
+    <div class="pv-dialog">
+      <div class="pv-input">&gt; use depth 18, and record the elo delta on the bead</div>
+      <div class="pv-row pv-sel" style="align-items: start;">
+        <div style="min-width: 0;">
+          <div>Answer r-3f2a</div>
+          <div style="font-size: 12px; color: #8f8ca3; margin-top: 3px;">chesski ch-19 is waiting on this</div>
+        </div>
+        <span class="pv-hint">Enter sends</span>
+      </div>
+      <div class="pv-cmd">ctl.sh answer r-3f2a "use depth 18, and record the elo delta on the bead"</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="pv-state" style="color: #f0625c;">4 &nbsp;what the palette will not do</div>
+    <div class="pv-dialog" style="border-color: rgba(240,98,92,0.5);">
+      <div class="pv-input">&gt; fin</div>
+      <div class="pv-row pv-sel">
+        <span>finish-check js-4</span>
+        <span class="pv-hint">dry run, merges nothing</span>
+      </div>
+      <div class="pv-row" style="opacity: 0.45;">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8f8ca3" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="1.5"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+          finish js-4 --confirm
+        </span>
+        <span class="pv-hint">use the button on the session row</span>
+      </div>
+      <div class="pv-row" style="opacity: 0.45;">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8f8ca3" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="1.5"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+          kill js-4
+        </span>
+        <span class="pv-hint">type the full session id to arm</span>
+      </div>
+      <div class="pv-cmd" style="color: #f0625c;">a fuzzy prefix never resolves to a verb that merges or destroys</div>
+    </div>
+    <p class="pv-note" style="margin: 2px 0 0; max-width: 60ch;">
+      The rule: the palette can do anything one click in a panel can do, and nothing that today takes two
+      deliberate steps.
+    </p>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":720,"height":1180}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

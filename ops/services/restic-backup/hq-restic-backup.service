@@ -1,0 +1,10 @@
+[Unit]
+Description=HQ restic backup of hqbox to George
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/hq-restic-backup
+Nice=10
+IOSchedulingClass=idle

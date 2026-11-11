@@ -1,0 +1,2 @@
+# Voice launchers are CRLF on George; keep their bytes so deploy --check compares them exactly.
+*.bat -text whitespace=cr-at-eol

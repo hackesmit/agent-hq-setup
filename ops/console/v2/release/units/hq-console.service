@@ -1,0 +1,130 @@
+[Unit]
+# HQ Console v2 public server (REST + WebSocket + static web), phase 0.
+# Design: docs/superpowers/specs/2026-08-17-console-v2-design.md section 3.
+#
+# It serves ONLY from /var/lib/hqconsole/releases/current, never from ~/hq:
+# the working tree is worker-writable, so a caged worker could otherwise swap
+# the code this daemon executes or the assets it serves.
+Description=HQ Console v2 server
+Documentation=file:///home/owner/hq/ops/console/v2/release/README.md
+
+# The server binds the box tailnet address, so it must not start before
+# tailscaled has one. network-online.target alone is not enough on a
+# tailnet-only bind, hence the explicit tailscaled dependency.
+After=network-online.target tailscaled.service
+Wants=network-online.target
+Requires=tailscaled.service
+
+# The TLS material comes from `tailscale cert`. The renew oneshot is pulled in
+# and ordered first so a boot after a long shutdown gets a fresh certificate
+# before the server tries to read it (design section 3: an expired cert makes
+# the server exit non-zero rather than serve something no browser accepts).
+Wants=hq-cert-renew.service
+After=hq-cert-renew.service
+
+# The runner is optional on purpose. A console without a runner still shows
+# state and still works; it just cannot open terminals. Wants, never Requires,
+# so a broken runner never takes the console down with it.
+Wants=hq-runner.socket
+After=hq-runner.socket
+
+[Service]
+Type=simple
+User=hqconsole
+Group=hqconsole
+# hqgit is the group that owns /run/lock/hqgit/hq-git.lock. Every repo mutation
+# the console performs goes through the owner-context wrapper under that lock,
+# so git-sync and the console never write the repo at the same time.
+SupplementaryGroups=hqgit
+
+WorkingDirectory=/var/lib/hqconsole
+
+Environment=NODE_ENV=production
+Environment=CONSOLE_RELEASE_ROOT=/var/lib/hqconsole/releases/current
+Environment=CONSOLE_STATE_DIR=/var/lib/hqconsole/state
+Environment=CONSOLE_TLS_DIR=/var/lib/hqconsole/tls
+Environment=CONSOLE_HOST=hqbox.example.ts.net
+# 8790 while tailscale serve still fronts v1 on 8787; the cutover moves this to 8787
+Environment=CONSOLE_PORT=8790
+Environment=CONSOLE_OWNER=owner@example.com
+Environment=CONSOLE_WRAPPER=/usr/local/lib/hq-console/spawn-as-owner.sh
+Environment=CONSOLE_WRAPPER_SUDO=1
+Environment=CONSOLE_WRAPPER_USER=owner
+# Capri, the meta terminal (proposal 19): ON, as installed on hqbox (the owner enabled it;
+# hq-fgg3.16 brought the repo in line). Keep it in step with the runner flag, together (the server serves the passkey + /api/meta routes, the runner
+# starts the session). CONSOLE_META_RP_ID / CONSOLE_META_ORIGIN default to the tailnet
+# host; set them only if the browser reaches the console by another name.
+Environment=CONSOLE_META_ENABLED=1
+Environment=CONSOLE_TAILSCALE_SOCK=/var/run/tailscale/tailscaled.sock
+Environment=HQ_ROOT=/home/owner/hq
+
+# Identity for THIS install (the account, the box, the tailnet name, the owner).
+# Declared LAST on purpose: systemd applies these in order, so the file overrides
+# the defaults above rather than being shadowed by them. The leading dash makes it
+# optional, so a install without the file behaves exactly as it did before.
+EnvironmentFile=-/home/owner/hq/ops/config/site.env
+# Everything the server executes or serves is resolved under this root.
+# Health stamp target. The server writes {"sha":"<release sha>","at":"<iso>"}
+# here on a successful listen; activate.sh reads it to decide whether the new
+# release came up (there is no self-callable health URL, see README).
+# The certificate is issued for this name and the server enforces the Host
+# header against it (design section 3).
+# Only this tailnet login is accepted, and only from a peer that is not this
+# node. The value is checked per connection with `tailscale whois`.
+
+ExecStart=/usr/bin/node /var/lib/hqconsole/releases/current/server/src/server.js
+
+# The candidate --check run happens in activate.sh, before the symlink moves,
+# not here: an ExecStartPre check would run after the switch and could only
+# fail the restart, not prevent the bad release from becoming current.
+
+Restart=on-failure
+RestartSec=3s
+# Graceful stop: the server stops accepting uploads on SIGTERM and waits up to
+# 60 s for in-flight ones to commit (design section 3). 90 s leaves headroom
+# before systemd escalates to SIGKILL and tears an upload in half.
+KillSignal=SIGTERM
+TimeoutStopSec=90s
+
+# NOT hardened away: the console spawns owner-context work through the single
+# sudo rule on spawn-as-owner.sh, and NoNewPrivileges=yes makes setuid sudo
+# fail outright. This is the one privilege the trust boundary depends on, so it
+# is spelled out rather than left to a default.
+NoNewPrivileges=no
+
+# Read-only filesystem except the console's own state tree and the git lock.
+# Note: /run stays read-only under strict, which does not prevent connect() to
+# the runner socket (connecting is not a write to the mount).
+# NOT strict: the sudo children (spawn-as-owner.sh -> ctl.sh, bd, spawn.sh) inherit this
+# unit's mount namespace and must write ~/hq/state, .beads and worker worktrees. "full"
+# still keeps /usr, /boot, /etc read-only for the console process itself.
+ProtectSystem=full
+ReadWritePaths=/var/lib/hqconsole /run/lock/hqgit
+# Collectors read world-readable paths under /home/owner/hq directly; writes
+# into the repo go through the wrapper, never from this process.
+# owner-context children write under /home/owner/hq (see above); the console process
+# itself has no reason to write there and the wrapper allowlist is the control
+ProtectHome=no
+# Caveat, deliberate: with PrivateTmp the wrapper processes this unit starts
+# with sudo see a private /tmp, not owner's. The wrapper only does atomic
+# writes inside ~/hq and git commits, so that is fine. Terminal sessions are
+# NOT started here (the runner owns them), where a private /tmp would break
+# workers; see hq-runner.service.
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=no
+LockPersonality=yes
+
+# OPEN QUESTION for P0.2 (the auth bead): `tailscale whois` talks to the
+# tailscaled LocalAPI socket, which is root-owned by default. Either hqconsole
+# is granted access to that socket (tailscale set --operator applies to one
+# user only) or the whois lookup is proxied. Do not widen this unit to fix it.
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hq-console
+
+[Install]
+WantedBy=multi-user.target

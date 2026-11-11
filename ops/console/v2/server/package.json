@@ -1,0 +1,20 @@
+{
+  "name": "@hq/console-server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test \"test/**/*.test.js\"",
+    "check": "node src/server.js --check"
+  },
+  "dependencies": {
+    "@simplewebauthn/server": "13.3.2",
+    "busboy": "1.6.0",
+    "ws": "8.21.3"
+  }
+}

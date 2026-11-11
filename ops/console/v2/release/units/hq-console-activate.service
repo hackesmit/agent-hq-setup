@@ -1,0 +1,38 @@
+[Unit]
+# Publishes a built release: copy into /var/lib/hqconsole/releases/<sha>, run
+# the candidate --check, switch `current`, restart the console, verify the
+# health stamp, roll back on failure.
+#
+# Root, and a separate unit from console-build.service on purpose. The builder
+# runs as hqbuild and must not be able to chown into the console tree or
+# restart a system service; splitting the two keeps the build user unprivileged
+# and keeps the privileged half to one short, auditable script.
+Description=HQ Console v2 release activation
+Documentation=file:///home/owner/hq/ops/console/v2/release/README.md
+After=console-build.service
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+
+# --latest picks the newest complete output under /var/lib/hqbuild/out and
+# no-ops when it is already the current release, so a run triggered by a build
+# that changed nothing costs one stat call.
+ExecStart=/usr/local/lib/hq-console/activate.sh --latest
+
+# Candidate check is capped at 30 s and the post-switch health wait at another
+# 30 s, plus the copy. 300 s is the outer bound; past that something is wedged
+# and leaving the switch half-done is worse than failing.
+TimeoutStartSec=300
+
+# No sandboxing directives: this unit chowns into /var/lib/hqconsole, writes
+# /etc-adjacent nothing, and calls systemctl. ProtectSystem=strict would block
+# the systemctl call path for no gain, since the script already runs as root.
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hq-console-activate
+
+# No [Install] section: triggered by console-build.service's OnSuccess= and by
+# hand for a manual activate or rollback.

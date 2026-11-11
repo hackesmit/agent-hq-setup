@@ -1,0 +1,20 @@
+# Boot drift check (hq-fgg3.1): five minutes after boot, compare what
+# ops/config/runtime.json declares (units, the hq tmux session, loop heartbeats)
+# with what runs, and send ONE urgent notify on drift. The unit fails only when
+# the checker itself breaks or the notify cannot go out; OnFailure (installed by
+# ops/services/failure-notify/install.sh) then alerts on that.
+# Install: ln -sfn ~/hq/ops/services/drift-check/hq-drift-boot.{service,timer} ~/.config/systemd/user/
+#          systemctl --user daemon-reload && systemctl --user enable --now hq-drift-boot.timer
+#          ~/hq/ops/services/failure-notify/install.sh
+# Revert:  systemctl --user disable --now hq-drift-boot.timer && rm ~/.config/systemd/user/hq-drift-boot.*
+[Unit]
+Description=HQ drift check at boot (declared versus running)
+After=tmux-hq.service
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=HQ_ROOT=%h/hq
+WorkingDirectory=%h/hq
+ExecStart=/bin/bash %h/hq/ops/scripts/drift-check.sh --boot --notify
+TimeoutStartSec=300

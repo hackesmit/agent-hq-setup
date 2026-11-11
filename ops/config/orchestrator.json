@@ -1,0 +1,10 @@
+{
+  "_comment": "Models per orchestrator role. the owner 2026-11-04: Fable decides, Sonnet sorts; 2026-11-10: Fable 5.2. Switch here, no code change.",
+  "models": {
+    "decide": "claude-fable-5-2",
+    "triage": "claude-sonnet-5-5"
+  },
+  "alert_share": 0.25,
+  "_alert": "Alert once a week when the orchestrator passes this share of HQ's weekly usage (0 to 1).",
+  "_comment_caps": "No caps (the owner 2026-11-04): plan usage is tracked, not capped. Add call_max_usd {role: usd} only if a reason appears."
+}

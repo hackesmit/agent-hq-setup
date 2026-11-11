@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "gworkspace": {
+      "command": "/home/owner/hq/ops/mcp/gworkspace-launch.sh",
+      "args": []
+    }
+  }
+}

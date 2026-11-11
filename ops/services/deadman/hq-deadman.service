@@ -1,0 +1,7 @@
+[Unit]
+Description=HQ dead-man check for user timers
+
+[Service]
+Type=oneshot
+ExecStart=%h/hq/ops/services/deadman/hq-deadman.sh user
+TimeoutStartSec=120

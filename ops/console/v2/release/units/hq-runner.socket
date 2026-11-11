@@ -1,0 +1,29 @@
+[Unit]
+# Socket activation for the terminal runner. Two reasons this is a socket unit
+# rather than a plain daemon (design section 3, runner paragraph):
+#  1. A spawn request that arrives while the runner is restarting after a drain
+#     queues in the kernel backlog instead of failing.
+#  2. The listening socket outlives the daemon, so the console never has to
+#     retry a connect during a runner restart.
+Description=HQ Console v2 terminal runner socket
+Documentation=file:///home/owner/hq/ops/console/v2/release/README.md
+
+[Socket]
+ListenStream=/run/hqconsole/runner.sock
+# 0660 hqconsole:hqconsole. Workers run as owner and are therefore unable to
+# open this socket at all, which is the trust boundary: a worker cannot ask the
+# runner for anything, it can only talk to ctl.sh and the state files.
+SocketUser=hqconsole
+SocketGroup=hqconsole
+SocketMode=0660
+# /run/hqconsole must exist before this unit binds, and the socket unit runs as
+# root so its own RuntimeDirectory would be root-owned. The directory is
+# therefore created by /etc/tmpfiles.d/hq-console.conf (installed by
+# provisioning) and merely preserved by the service unit.
+RemoveOnStop=yes
+# One in-flight connection per console instance plus queued spawns during a
+# restart; a deep backlog here would only hide a wedged runner.
+Backlog=32
+
+[Install]
+WantedBy=sockets.target

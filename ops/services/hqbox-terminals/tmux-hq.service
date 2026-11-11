@@ -1,0 +1,32 @@
+# systemd user unit: the FULL HQ workspace on hqbox at boot, not a bare shell.
+# Runs the same launcher the owner types by hand, which builds the hq tmux session
+# with its service windows (monitor, git-sync, stall-watch) and the tiled
+# Claude work window. Cage-integrity and canary failures only warn (notify).
+#
+# Without a tty the launcher builds the layout and exits 0 instead of
+# attaching, so any non-zero exit is a real failure. There is deliberately no
+# SuccessExitStatus=1: that line made a refused boot look healthy on
+# 2026-10-16 (hq-fgg3.3). A failure fires OnFailure= through the drop-in that
+# ops/services/failure-notify/install.sh installs. If the session already
+# exists the launcher exits 0, so a restart never doubles the layout.
+#
+# Attach from anywhere on the tailnet:
+#   ssh owner@hqbox -t tmux attach -t hq
+# or from the code-server browser terminal: tmux attach -t hq
+# Deployed to ~/.config/systemd/user/ by install.sh (linger must be on).
+[Unit]
+Description=HQ tmux workspace (full layout via hq launcher)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/bin/bash %h/hq/ops/scripts/hq.sh
+# `=hq` matches only the session named exactly hq; a bare `-t hq` prefix-matches
+# another session (hq-errors) when hq is gone.
+ExecStop=/usr/bin/tmux kill-session -t =hq
+
+[Install]
+WantedBy=default.target

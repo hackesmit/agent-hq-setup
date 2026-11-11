@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["items"],
+  "properties": {
+    "items": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "url", "ecosystem", "package", "severity", "cve", "summary"],
+        "properties": {
+          "title": { "type": "string", "maxLength": 200 },
+          "url": { "type": "string", "maxLength": 300 },
+          "ecosystem": { "type": "string", "enum": ["npm", "pypi", "deb", "docker"] },
+          "package": { "type": "string", "maxLength": 120 },
+          "severity": { "type": "string", "enum": ["critical", "high", "medium", "low", "unknown"] },
+          "cve": { "type": "string", "maxLength": 40 },
+          "summary": { "type": "string", "maxLength": 400 }
+        }
+      }
+    }
+  }
+}

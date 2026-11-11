@@ -1,0 +1,19 @@
+# The per-call Claude usage ledger (otel-ledger.py says what it keeps and why).
+# Listens on 127.0.0.1:4318 only. Claude Code does not wait on it, so when it is
+# down sessions run the same and only the usage rows are lost; OnFailure= pages
+# through the drop-in ops/services/failure-notify/install.sh installs.
+# Deployed to ~/.config/systemd/user/ by install.sh.
+[Unit]
+Description=HQ Claude usage ledger (OTLP receiver into SQLite)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -I %h/hq/ops/services/otel-ledger/otel-ledger.py serve
+Restart=on-failure
+RestartSec=10
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Install]
+WantedBy=default.target

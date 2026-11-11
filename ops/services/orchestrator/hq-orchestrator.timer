@@ -1,0 +1,13 @@
+# Daily nudge for the orchestrator runner (hq-4npjr.2): events deferred by a cap hit, and
+# failed calls waiting for a retry, run once the UTC day rolls over even if nothing new
+# is emitted. Install and revert: see hq-orchestrator.path.
+[Unit]
+Description=HQ orchestrator daily retry (00:05 UTC, after the daily cap resets)
+
+[Timer]
+OnCalendar=*-*-* 00:05:00 UTC
+Persistent=true
+Unit=hq-orchestrator.service
+
+[Install]
+WantedBy=timers.target

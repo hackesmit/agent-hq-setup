@@ -1,0 +1,8 @@
+[Unit]
+Description=HQ weekly stack review (headless claude, Fridays)
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/hq-weekly-stack-review
+TimeoutStartSec=3650
+TimeoutStopSec=30

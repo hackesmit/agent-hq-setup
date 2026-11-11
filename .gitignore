@@ -1,0 +1,46 @@
+# Root .gitignore of the public HQ setup repo. hq-public-export.sh writes this
+# file (ops/share/public.gitignore in the source) to .gitignore in the export.
+# It keeps secrets, machine-local state and runtime output out of a clone.
+
+# secrets and credentials
+ops/.env
+ops/config/site.env
+ops/config/visibility.env
+.git-credentials
+.beads-credential-key
+*.pem
+*.key
+
+# machine-local state, rigs and runtime output
+state/
+/rigs/
+outbox/
+inbox/
+/share/
+ops/*.log
+ops/*.log.*
+ops/metrics/
+ops/.egress-seen
+ops/.desktop-share
+ops/.vault-path
+
+# agent and tool local files
+.claude/settings.local.json
+.claude/worktrees/
+.superpowers/
+.playwright-mcp/
+.cache/
+
+# beads / dolt local database
+.dolt/
+*.db
+.beads/proxieddb/
+.beads.gate.lock
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# generated graph output
+graphify-out/

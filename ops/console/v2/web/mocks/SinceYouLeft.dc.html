@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+    a { color: #b388ff; } a:hover { color: #c9a9ff; }
+    .sl-card { background: #111116; border: 1px solid #24242e; border-radius: 4px; }
+    .sl-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding: 10px 14px; border-bottom: 1px solid #24242e; }
+    .sl-title { margin: 0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #8f8ca3; }
+    .sl-chip { display: inline-block; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px; }
+    .sl-state { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #8f8ca3; }
+    .sl-ev { display: grid; grid-template-columns: 46px 62px 128px minmax(0,1fr); gap: 10px; align-items: baseline; font-size: 12px; padding: 5px 0; }
+    .sl-btn { border: 1px solid transparent; background: transparent; color: #8f8ca3; border-radius: 2px; padding: 2px 8px; font: inherit; font-size: 11px; }
+  </style>
+</helmet>
+
+<div style="width: 860px; box-sizing: border-box; background: #0a0a0d; color: #e8e6f0; font: 14px/1.45 'Cascadia Mono', 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; padding: 26px; display: flex; flex-direction: column; gap: 24px;">
+
+  <div>
+    <h1 style="margin: 0; font-size: 18px; font-weight: 600;">Since You Left</h1>
+    <p style="margin: 8px 0 0; font-size: 12px; color: #8f8ca3; max-width: 64ch; text-wrap: pretty;">
+      The console already records everything that happened overnight. It just has no idea what you have and have
+      not seen. One marker fixes that: a ribbon that counts, and a line drawn where you stopped reading.
+    </p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="sl-state">the ribbon, above Needs-you</div>
+    <div class="sl-card" style="border-left: 2px solid #b388ff; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+        <span style="font-size: 13px; color: #8f8ca3;">Away 8h 12m, since 23:14</span>
+        <button type="button" class="sl-btn" style="margin-left: auto; border-color: #24242e;">Mark seen</button>
+      </div>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <span class="sl-chip" style="background: #1d1c27; color: #8f8ca3;">6 commits</span>
+        <span class="sl-chip" style="background: rgba(79,191,122,0.15); color: #4fbf7a;">2 merges</span>
+        <span class="sl-chip" style="background: rgba(240,98,92,0.15); color: #f0625c;">1 deploy failed</span>
+        <span class="sl-chip" style="background: rgba(224,166,58,0.15); color: #e0a63a;">3 asks, 2 still open</span>
+        <span class="sl-chip" style="background: rgba(79,191,122,0.15); color: #4fbf7a;">1 bead closed</span>
+        <span class="sl-chip" style="background: #1d1c27; color: #8f8ca3;">$4.10</span>
+      </div>
+      <div style="font-size: 11px; color: #55536a;">
+        merges in gym-tracker and fintrack-portfolio, the failed deploy is acme-dashboard, the open asks are chesski ch-19 and acme-dashboard xd-207
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 260px; display: flex; flex-direction: column; gap: 8px;">
+      <div class="sl-state">back in under an hour</div>
+      <div class="sl-card" style="border-left: 2px solid #24242e; padding: 12px 14px; font-size: 13px; color: #8f8ca3;">Nothing since 06:12</div>
+    </div>
+    <div style="flex: 1; min-width: 260px; display: flex; flex-direction: column; gap: 8px;">
+      <div class="sl-state">back in under 45 minutes</div>
+      <div style="border: 1px dashed #24242e; border-radius: 4px; padding: 12px 14px; font-size: 12px; color: #55536a;">the ribbon does not render at all</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="sl-state">the horizon line, inside Activity</div>
+    <div class="sl-card">
+      <div class="sl-head">
+        <h2 class="sl-title">Activity</h2>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span class="sl-chip" style="background: rgba(179,136,255,0.2); color: #b388ff;">7 new since 23:14</span>
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #b388ff;"></span>
+          <button type="button" class="sl-btn">hide</button>
+        </div>
+      </div>
+      <div style="padding: 10px 14px 14px;">
+        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
+          <span class="sl-chip" style="background: rgba(179,136,255,0.2); color: #b388ff;">all</span>
+          <span class="sl-chip" style="background: #1d1c27; color: #8f8ca3;">ops</span>
+          <span class="sl-chip" style="background: #1d1c27; color: #8f8ca3;">commits</span>
+          <span class="sl-chip" style="background: #1d1c27; color: #8f8ca3;">asks</span>
+          <span class="sl-chip" style="background: #1d1c27; color: #8f8ca3;">alerts</span>
+        </div>
+
+        <div class="sl-ev"><span style="color: #55536a;">2m</span><span style="color: #e0a63a;">ask</span><span style="color: #8f8ca3;">chesski</span><span>ch-19 depth bump, still open</span></div>
+        <div class="sl-ev"><span style="color: #55536a;">14m</span><span style="color: #4fbf7a;">merge</span><span style="color: #8f8ca3;">gym-tracker</span><span>gt-88 backend rate limit</span></div>
+        <div class="sl-ev"><span style="color: #55536a;">31m</span><span style="color: #f0625c;">error</span><span style="color: #8f8ca3;">acme-dashboard</span><span>vercel build failed, exit 1</span></div>
+        <div class="sl-ev"><span style="color: #55536a;">1h</span><span style="color: #8f8ca3;">commit</span><span style="color: #8f8ca3;">acme-dashboard</span><span>xd-207 avance tema sync</span></div>
+
+        <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+          <span style="font-size: 11px; color: #55536a; white-space: nowrap;">you left off here, 23:14</span>
+          <span style="flex: 1; height: 1px; background: #24242e;"></span>
+        </div>
+
+        <div class="sl-ev" style="opacity: 0.5;"><span style="color: #55536a;">9h</span><span style="color: #8f8ca3;">dispatch</span><span style="color: #8f8ca3;">fintrack-portfolio</span><span>dh-142 to opus-4-7</span></div>
+        <div class="sl-ev" style="opacity: 0.5;"><span style="color: #55536a;">9h</span><span style="color: #8f8ca3;">commit</span><span style="color: #8f8ca3;">chesski</span><span>ch-19 stockfish depth flag</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 16px; flex-wrap: wrap; border-top: 1px solid #24242e; padding-top: 14px;">
+    <div style="flex: 1; min-width: 240px;">
+      <div class="sl-state">two rules worth keeping</div>
+      <p style="margin: 8px 0 0; font-size: 12px; color: #8f8ca3; text-wrap: pretty;">
+        The marker moves only when you press Mark seen. Never on tab focus, never on a push, or the console would
+        quietly decide you had read something you had not.
+      </p>
+    </div>
+    <div style="flex: 1; min-width: 240px;">
+      <div class="sl-state">and when the stream is truncated</div>
+      <p style="margin: 8px 0 0; font-size: 12px; color: #8f8ca3; text-wrap: pretty;">
+        Past the 200-event cap the ribbon says "at least 6 commits" rather than a confidently wrong number, and the
+        list fades at the edge where it was clipped.
+      </p>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":860,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

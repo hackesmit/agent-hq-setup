@@ -1,0 +1,13 @@
+[Unit]
+Description=HQ weekly stack review timer (Fridays 16:07 UTC, 09:07 local time)
+# Fridays is what is installed and what has run (2026-10-09, 10-16). Commit
+# a7644f0 (2026-09-06) moved this file to Sundays but the move was never
+# installed; hq-fgg3.9 reset the repo to the running schedule. The weekly
+# retro (hq-retro.timer) runs 90 minutes after this one.
+
+[Timer]
+OnCalendar=Fri *-*-* 16:07:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

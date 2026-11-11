@@ -1,0 +1,6 @@
+[Unit]
+Description=HQ disk health reading for the console
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/hq-disk-health

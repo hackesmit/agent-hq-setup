@@ -1,0 +1,11 @@
+[Unit]
+Description=ob-sync liveness proof timer (every 5 minutes)
+
+[Timer]
+OnBootSec=2min
+OnCalendar=*:0/5
+AccuracySec=30s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

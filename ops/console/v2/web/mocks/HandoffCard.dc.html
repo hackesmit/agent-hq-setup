@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+    a { color: #b388ff; } a:hover { color: #c9a9ff; }
+    .hc-card { background: #111116; border: 1px solid #24242e; border-radius: 4px; }
+    .hc-chip { display: inline-block; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px; background: #1d1c27; color: #e8e6f0; }
+    .hc-chip-mute { background: #1d1c27; color: #8f8ca3; }
+    .hc-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #55536a; }
+    .hc-mono { font-size: 12px; color: #8f8ca3; }
+    .hc-state { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #8f8ca3; }
+    .hc-btn { border: 1px solid #24242e; background: #111116; color: #e8e6f0; border-radius: 2px; padding: 3px 10px; font: inherit; font-size: 11px; }
+    .hc-file { display: grid; grid-template-columns: minmax(0,1fr) 96px 74px; gap: 10px; align-items: center; font-size: 12px; }
+  </style>
+</helmet>
+
+<div style="width: 760px; box-sizing: border-box; background: #0a0a0d; color: #e8e6f0; font: 14px/1.45 'Cascadia Mono', 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; padding: 26px; display: flex; flex-direction: column; gap: 24px;">
+
+  <div>
+    <h1 style="margin: 0; font-size: 18px; font-weight: 600;">Handoff Card</h1>
+    <p style="margin: 8px 0 0; font-size: 12px; color: #8f8ca3; max-width: 62ch; text-wrap: pretty;">
+      Merging is the most consequential click in the console and today it shows a raw error string. This is the
+      same moment with the four things the decision actually needs.
+    </p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="hc-state">A &nbsp;the gate is holding it back</div>
+    <div class="hc-card" style="padding: 14px; display: flex; flex-direction: column; gap: 12px;">
+
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #e0a63a;"></span>
+        <b style="font-size: 13px;">js-4</b>
+        <span class="hc-chip">acme-dashboard</span>
+        <span class="hc-chip hc-chip-mute">xd-207</span>
+        <span class="hc-chip hc-chip-mute">opus-4-8</span>
+        <span style="margin-left: auto; font-size: 12px; color: #8f8ca3;">finishable 6m</span>
+      </div>
+
+      <div class="hc-mono">branch xd-207-avance-tema &nbsp; head 7f59483 &nbsp; base main</div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; align-items: baseline; gap: 10px;">
+          <span class="hc-label">Diffstat</span>
+          <span style="font-size: 12px;">4 files, <span style="color: #4fbf7a;">+186</span> <span style="color: #f0625c;">-23</span></span>
+        </div>
+        <div class="hc-file"><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">web/mocks/avance-app.html</span><span style="color: #8f8ca3;">+141 -8</span><span style="display: flex; gap: 2px;"><span style="height: 6px; width: 60px; background: #4fbf7a;"></span><span style="height: 6px; width: 6px; background: #f0625c;"></span></span></div>
+        <div class="hc-file"><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">web/src/theme/tokens.css</span><span style="color: #8f8ca3;">+22 -4</span><span style="display: flex; gap: 2px;"><span style="height: 6px; width: 14px; background: #4fbf7a;"></span><span style="height: 6px; width: 4px; background: #f0625c;"></span></span></div>
+        <div class="hc-file"><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">docs/design/avance.md</span><span style="color: #8f8ca3;">+18 -0</span><span style="display: flex; gap: 2px;"><span style="height: 6px; width: 11px; background: #4fbf7a;"></span></span></div>
+        <div class="hc-file"><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">scripts/build-mock.sh</span><span style="color: #8f8ca3;">+5 -11</span><span style="display: flex; gap: 2px;"><span style="height: 6px; width: 4px; background: #4fbf7a;"></span><span style="height: 6px; width: 8px; background: #f0625c;"></span></span></div>
+      </div>
+
+      <div>
+        <div class="hc-label">What the worker says</div>
+        <p style="margin: 6px 0 0; font-size: 12px; color: #e8e6f0; background: #17171e; border-radius: 2px; padding: 10px; text-wrap: pretty;">
+          Rebuilt the avance-app mock against the real Orbit Acme brand direction and wired the design card to the
+          ?tema= preset so the two stay in sync. Spanish labels and metric units kept per the repo CLAUDE.md, and no
+          CDN additions.
+        </p>
+      </div>
+
+      <div style="background: rgba(79,191,122,0.10); border-radius: 2px; padding: 9px 10px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap;">
+        <span style="font-size: 11px; color: #4fbf7a;">Verification</span>
+        <span style="font-size: 12px; min-width: 0; overflow-wrap: anywhere;">URL/UI, browser load plus screenshot, tema=noche and tema=dia both correct</span>
+        <span style="font-size: 11px; color: #8f8ca3; margin-left: auto;">receipt 11:42, target last changed 11:39</span>
+      </div>
+
+      <div style="background: rgba(240,98,92,0.10); border-radius: 2px; padding: 9px 10px; font-size: 12px; color: #f0625c;">
+        Needs a review approval matching 7f59483
+      </div>
+
+      <div>
+        <div class="hc-label">Hand yourself the review</div>
+        <div style="display: flex; gap: 8px; align-items: stretch; margin-top: 6px;">
+          <code style="flex: 1; min-width: 0; background: #000; border-radius: 2px; padding: 9px 10px; font-size: 11px; color: #8f8ca3; overflow-wrap: anywhere;">lucy --rig acme-dashboard --base main "avance-app tema sync and brand direction; DoD: mock matches the brand deck, ?tema= drives the design card"</code>
+          <button type="button" class="hc-btn" style="align-self: flex-start;">Copy</button>
+        </div>
+        <div style="font-size: 11px; color: #55536a; margin-top: 6px;">the console does not run the review, it hands you the command</div>
+      </div>
+
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button type="button" class="hc-btn" style="background: #b388ff; border-color: #b388ff; color: #0a0a0d; opacity: 0.4;">Finish now</button>
+        <span style="font-size: 11px; color: #55536a;">disabled until the gate passes</span>
+        <button type="button" class="hc-btn" style="margin-left: auto; border-color: transparent; color: #8f8ca3;">cancel</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="hc-state">B &nbsp;the gate passes</div>
+    <div class="hc-card" style="padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #4fbf7a;"></span>
+        <b style="font-size: 13px;">js-4</b>
+        <span class="hc-chip">acme-dashboard</span>
+        <span class="hc-chip hc-chip-mute">xd-207</span>
+      </div>
+      <div style="background: rgba(79,191,122,0.10); border-radius: 2px; padding: 9px 10px; font-size: 12px; color: #4fbf7a;">
+        Approval found for 7f59483, two checks green
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button type="button" class="hc-btn" style="background: #b388ff; border-color: #b388ff; color: #0a0a0d;">Finish now</button>
+        <span style="font-size: 11px; color: #55536a;">merges into main, removes the worktree, closes the bead</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="hc-state">C &nbsp;no receipt, and the card says exactly what is missing</div>
+    <div class="hc-card" style="padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #e0a63a;"></span>
+        <b style="font-size: 13px;">js-7</b>
+        <span class="hc-chip">gym-tracker</span>
+        <span class="hc-chip hc-chip-mute">gt-88</span>
+        <span style="margin-left: auto; font-size: 12px; color: #8f8ca3;">2 files, <span style="color: #4fbf7a;">+9</span> <span style="color: #f0625c;">-4</span></span>
+      </div>
+      <div style="background: rgba(240,98,92,0.10); border-radius: 2px; padding: 9px 10px;">
+        <div style="font-size: 12px; color: #f0625c;">No verification receipt on the bead</div>
+        <code style="display: block; margin-top: 7px; font-size: 11px; color: #8f8ca3; overflow-wrap: anywhere;">Verification: code, npm test -w backend, 41 pass, 0 fail</code>
+      </div>
+      <div style="font-size: 11px; color: #55536a;">Finish stays disabled. A green check somewhere is not a receipt for this change.</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div class="hc-state" style="color: #55536a;">today</div>
+    <pre style="margin: 0; background: #000; border: 1px solid #24242e; border-radius: 2px; padding: 10px; font-size: 11px; color: #55536a; white-space: pre-wrap; overflow-wrap: anywhere;">finish: refusing js-4: no Review-Approve marker for 7f59483 (bead xd-207)
+  see ops/scripts/finish.sh:212</pre>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":760,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+models/
+inputs/
+inputs-en/
+runs/
+venv/
+venv*/
+__pycache__/
+*.log
+*.out
+*.done
+*.bak*

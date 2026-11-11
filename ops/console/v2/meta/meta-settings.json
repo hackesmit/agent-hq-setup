@@ -1,0 +1,22 @@
+{
+  "_comment": "Meta terminal settings (console v2; proposal 19, then full trust, proposal 58). Provisioned to /var/lib/hqconsole/meta/meta-settings.json, root-owned. Capri runs like every other console terminal: bypassPermissions, no prompts, no deny list, launched with --dangerously-skip-permissions (the owner, 2026-10-11). The settings-integrity hook is unwired, because it existed only to protect the per-action prompt. The audit hook stays as the record of what the session did. Only this file is loaded (--setting-sources ''), so model is pinned here. Absolute paths only: this file is loaded outside the hq project dir.",
+  "model": "claude-fable-5-1",
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [],
+    "deny": []
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/var/lib/hqconsole/meta/hook-meta-audit.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

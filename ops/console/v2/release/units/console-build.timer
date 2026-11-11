@@ -1,0 +1,22 @@
+[Unit]
+# Polls the mirror for a new origin/main commit. The design forbids a path unit
+# on the working tree: ~/hq is worker-writable, so a worker saving a file must
+# never be able to trigger a build.
+Description=HQ Console v2 release build poll
+Documentation=file:///home/owner/hq/ops/console/v2/release/README.md
+
+[Timer]
+Unit=console-build.service
+# Not at boot exactly: give tailscaled, git-sync and the first mirror fetch a
+# few minutes so the first build of the day sees a current mirror.
+OnBootSec=3min
+OnUnitActiveSec=5min
+# A build poll is cheap and almost always a no-op (build.sh exits early when
+# the sha is already built), so loose accuracy saves wakeups.
+AccuracySec=30s
+RandomizedDelaySec=30s
+# Deliberately NOT Persistent=true: a missed poll while the box was off is
+# worthless, the next poll 5 minutes later sees the same commit.
+
+[Install]
+WantedBy=timers.target

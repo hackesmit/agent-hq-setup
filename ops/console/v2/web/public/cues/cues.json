@@ -1,0 +1,26 @@
+{
+  "_comment": "Sound files for the console cue vocabulary. Drop files in this directory and name them here. Generated cue files ship here (synthesized offline, stdlib WAVs); replace any with your own recording and it is used instead. Every cue not listed falls back to a synthesized tone (see src/app/cuePlayer.ts TONES), so a half-filled manifest is fine and an empty one is fine. Paths are relative to this file. Keep them short: under 700ms, normalised, no silence at the head. Design: docs/superpowers/specs/2026-08-24-capri-voice-hermes-jira-gastown.md section 2.",
+  "_cues": {
+    "URGENT": "a P0 alert. Three insistent tones. Rings a second time after 30s if untouched.",
+    "NEEDS_YOU": "a question arrives, or a P1 alert. Two rising tones. The one that must not be missed.",
+    "FAILED": "an error or a failed operation. A dull low thud. Must not resemble DONE.",
+    "DONE": "a bead merged and closed. A warm two-note fall. The reward sound.",
+    "ANSWERED": "an answer reached a waiting worker. One soft tick.",
+    "DISPATCHED": "a worker was spawned. A short quiet click. This happens all day.",
+    "LISTENING": "Capri heard the wake word. A rising blip.",
+    "COMMITTED": "Capri heard execute. A short confirming chirp.",
+    "CANCEL": "Capri dropped what it heard. A descending blip."
+  },
+  "gain": 1,
+  "files": {
+    "URGENT": "urgent.wav",
+    "NEEDS_YOU": "needs-you.wav",
+    "ANSWERED": "answered.wav",
+    "DONE": "done.wav",
+    "DISPATCHED": "dispatched.wav",
+    "FAILED": "failed.wav",
+    "LISTENING": "listening.wav",
+    "COMMITTED": "committed.wav",
+    "CANCEL": "cancel.wav"
+  }
+}

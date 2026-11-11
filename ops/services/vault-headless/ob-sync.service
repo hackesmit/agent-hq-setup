@@ -1,0 +1,30 @@
+# systemd user unit: official Obsidian headless Sync on hqbox.
+# This is the permanent vault design (vault note: Vault permanence
+# architecture, 2026-08-11; approved by the owner 2026-08-11): hqbox holds the
+# always-on canonical replica at ~/vault via Obsidian's own Sync, in
+# BIDIRECTIONAL mode. Never mirror-remote (reverts local changes and would
+# eat agent writes).
+#
+# Prereqs, done ONCE interactively by the owner (credentials are his):
+#   ob login
+#   ob sync-setup   (choose the GKB vault, target ~/vault, E2EE password)
+# Then: install -D this file to ~/.config/systemd/user/ and
+#   systemctl --user enable --now ob-sync
+#
+# During the soak the old ~/vault-mirror keeps running in parallel as a
+# SEPARATE directory; agents read the mirror until cutover. The two must
+# never point at the same folder.
+[Unit]
+Description=Obsidian headless Sync (canonical vault replica)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=%h/.local/bin/ob sync --path %h/vault --continuous
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

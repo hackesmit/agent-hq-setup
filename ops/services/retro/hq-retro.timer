@@ -1,0 +1,9 @@
+[Unit]
+Description=HQ weekly retro timer (Fridays 17:37 UTC, 90 min after the 16:07 weekly stack review so the two headless runs do not overlap)
+
+[Timer]
+OnCalendar=Fri *-*-* 17:37:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,15 @@
+{
+  "_comment": "Runtime preset: Gemini CLI. Values from Gas Town's production preset. Hooks exist (.gemini/settings.json), so the cage CAN follow here once the six guards are ported (est. 2-3 days incl. fixtures); until that port lands, treat as supports_hooks false for dispatch policy.",
+  "name": "gemini",
+  "command": "gemini",
+  "headless": { "prompt_flag": "-p", "output_flag": "--output-format json" },
+  "args": ["--approval-mode", "yolo"],
+  "model_flag": "--model",
+  "models": ["gemini-3-pro", "gemini-3-flash"],
+  "process_names": ["gemini"],
+  "resume": { "style": "flag", "flag": "--resume" },
+  "instructions_file": "AGENTS.md",
+  "supports_hooks": false,
+  "hooks_portable": true,
+  "notes": "supports_hooks flips true only when the guard port ships with its fixture suite. Ordinary beads + adversarial review before merge until then."
+}

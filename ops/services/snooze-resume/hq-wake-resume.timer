@@ -1,0 +1,13 @@
+# Fires two minutes after boot (after tmux-hq has the hq session up), then every 15 minutes
+# so a wake that fired while the hq session was missing is retried (hq-1nkg.15).
+# See hq-wake-resume.service.
+[Unit]
+Description=HQ snooze resume two minutes after boot
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=15min
+Unit=hq-wake-resume.service
+
+[Install]
+WantedBy=timers.target

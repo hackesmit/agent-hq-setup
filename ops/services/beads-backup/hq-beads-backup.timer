@@ -1,0 +1,9 @@
+[Unit]
+Description=HQ beads ledger daily backup timer (04:17 UTC)
+
+[Timer]
+OnCalendar=*-*-* 04:17:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,10 @@
+# User-scope failure alert. The 10-onfailure.conf drop-in wires it as
+# OnFailure=hq-failure-notify@%n.service on every HQ user unit; %i is the unit
+# that failed. Installed by ops/services/failure-notify/install.sh.
+[Unit]
+Description=Report a failed HQ user unit (%i)
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/bin/bash %h/hq/ops/services/failure-notify/notify-failure.sh %i user

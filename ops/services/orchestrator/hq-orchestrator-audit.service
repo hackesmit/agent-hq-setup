@@ -1,0 +1,17 @@
+# Daily audit of the orchestrator's own answers to worker asks (hq-4npjr.6): files one P1
+# bead when an answer cites no source or looks like the owner's call (invariant 8 mechanism).
+# Install: cp hq-orchestrator-audit.{service,timer} ~/.config/systemd/user/ &&
+#   systemctl --user daemon-reload && systemctl --user enable --now hq-orchestrator-audit.timer
+# Revert: systemctl --user disable --now hq-orchestrator-audit.timer && rm the two unit files.
+[Unit]
+Description=HQ orchestrator answer audit
+# Skips cleanly until the script is on the main checkout (installed before merge).
+ConditionPathExists=%h/hq/ops/scripts/orchestrator_log.py
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=HQ_ROOT=%h/hq
+WorkingDirectory=%h/hq
+ExecStart=/usr/bin/python3 %h/hq/ops/scripts/orchestrator_log.py audit
+TimeoutStartSec=10min

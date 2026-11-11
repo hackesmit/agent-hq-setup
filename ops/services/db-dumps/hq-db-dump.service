@@ -1,0 +1,11 @@
+[Unit]
+Description=HQ nightly pg_dump of the production Supabase databases
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/hq-db-dump
+TimeoutStartSec=2h
+Nice=10
+IOSchedulingClass=idle

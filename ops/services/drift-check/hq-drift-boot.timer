@@ -1,0 +1,11 @@
+# Fires once per boot, five minutes in, so tmux-hq and the loops have had time
+# to start and write a first heartbeat. See hq-drift-boot.service.
+[Unit]
+Description=HQ drift check five minutes after boot
+
+[Timer]
+OnBootSec=5min
+Unit=hq-drift-boot.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Block force pushes and deletions of main/master from any agent worktree.
+ZERO=0000000000000000000000000000000000000000
+scan_ranges=()
+while read local_ref local_sha remote_ref remote_sha; do
+  # Collect what this push adds, for the secret scan below (deletes add nothing).
+  if [[ "$local_sha" != "$ZERO" ]]; then
+    # A new branch, or a force push over a remote sha this clone never
+    # fetched, has no usable base: scan everything not already on a remote.
+    if [[ "$remote_sha" == "$ZERO" ]] || ! git cat-file -e "$remote_sha^{commit}" 2>/dev/null; then
+      scan_ranges+=("$local_sha --not --remotes")
+    else
+      scan_ranges+=("$remote_sha..$local_sha")
+    fi
+  fi
+  if [[ "$remote_ref" =~ refs/heads/(main|master)$ ]]; then
+    if [[ "$local_sha" == 0000000000000000000000000000000000000000 ]]; then
+      echo "BLOCKED: deleting $remote_ref" >&2; exit 1
+    fi
+    # remote_sha of all zeros = branch does not exist remotely yet; creation is fine
+    if [[ "$remote_sha" != 0000000000000000000000000000000000000000 ]] && \
+       ! git merge-base --is-ancestor "$remote_sha" "$local_sha" 2>/dev/null; then
+      echo "BLOCKED: non-fast-forward push to $remote_ref" >&2; exit 1
+    fi
+  fi
+done
+
+# Secret scan (gitleaks) over the commits being pushed. Fail-closed: a missing
+# scanner, an invalid range, a gitleaks error or any non-zero exit blocks the
+# push. The rules come from the hq-owned gitleaks.toml next to this hook, so a
+# repo .gitleaks.toml cannot weaken them. Bypass for a reviewed false positive:
+# add the fingerprint to the repo's .gitleaksignore (the hook warns when a push
+# changes it); HQ_SECRET_SCAN=0 skips the scan.
+if [[ "${HQ_SECRET_SCAN:-1}" != 0 && ${#scan_ranges[@]} -gt 0 ]]; then
+  gl="$(command -v gitleaks || true)"
+  [ -z "$gl" ] && [ -x "$HOME/.local/bin/gitleaks" ] && gl="$HOME/.local/bin/gitleaks"
+  if [ -z "$gl" ]; then
+    echo "BLOCKED: gitleaks not found; secret scan cannot run (HQ_SECRET_SCAN=0 to skip)" >&2; exit 1
+  fi
+  glconf="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/gitleaks.toml"
+  if [ ! -r "$glconf" ]; then
+    echo "BLOCKED: hq gitleaks config missing at $glconf" >&2; exit 1
+  fi
+  glerr="$(mktemp)"; trap 'rm -f "$glerr"' EXIT
+  for range in "${scan_ranges[@]}"; do
+    # shellcheck disable=SC2086  # range is "a..b" or "sha --not --remotes"
+    if ! git rev-list $range >/dev/null 2>&1; then
+      echo "BLOCKED: secret scan cannot resolve range '$range'" >&2; exit 1
+    fi
+    # shellcheck disable=SC2086
+    if git log --format= --name-only $range 2>/dev/null | grep -qxE '\.gitleaks(ignore|\.toml)'; then
+      echo "WARNING: this push changes .gitleaksignore or .gitleaks.toml; review the allowlist change" >&2
+    fi
+    "$gl" git --no-banner --no-color --redact --exit-code 1 --log-level error \
+      --config "$glconf" --log-opts="$range" . >&2 2>"$glerr"
+    rc=$?
+    cat "$glerr" >&2
+    if [ "$rc" -eq 1 ]; then
+      echo "BLOCKED: gitleaks found a possible secret in $range" >&2; exit 1
+    elif [ "$rc" -ne 0 ] || grep -qE '(^|[[:space:]])(ERR|FTL|FATAL)([[:space:]]|$)' "$glerr"; then
+      echo "BLOCKED: gitleaks errored on $range (exit $rc); secret scan did not complete" >&2; exit 1
+    fi
+  done
+  rm -f "$glerr"
+fi
+
+# Chain to the repo's own pre-push hook if one exists.
+legacy="$(git rev-parse --git-common-dir)/hooks/pre-push"
+[ -x "$legacy" ] && exec "$legacy" "$@"
+exit 0

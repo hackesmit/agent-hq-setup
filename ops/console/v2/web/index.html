@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" data-design="teletype">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0c0c0b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Token Burner 5000</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <!-- a bright yellow dot: tells the console's tab apart at a glance -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- the console server replaces the content of this meta tag at serve time with the per-boot CSRF key
+         (a meta tag, not an inline script: the CSP allows no inline script) -->
+    <meta name="console-boot-key" content="__CONSOLE_BOOT_KEY__" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

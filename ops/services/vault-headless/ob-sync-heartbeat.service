@@ -1,0 +1,14 @@
+# systemd user unit: stamps state/heartbeat/ob-sync with the time of ob-sync's
+# last "Fully synced" journal line (hq-fgg3.20). Read-only toward ob-sync: it
+# never restarts or signals it. Install (after the merge to ~/hq main):
+#   install -D -m 0644 -t ~/.config/systemd/user ~/hq/ops/services/vault-headless/ob-sync-heartbeat.{service,timer}
+#   ~/hq/ops/services/failure-notify/install.sh
+#   systemctl --user daemon-reload && systemctl --user enable --now ob-sync-heartbeat.timer
+[Unit]
+Description=ob-sync liveness proof (heartbeat on last successful sync)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash %h/hq/ops/services/vault-headless/ob-sync-heartbeat.sh
+TimeoutStartSec=60
+Nice=10

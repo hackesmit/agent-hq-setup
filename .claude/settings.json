@@ -1,0 +1,215 @@
+{
+  "env": {
+    "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "ANTHROPIC_API_KEY,GITHUB_TOKEN,GH_TOKEN,NPM_TOKEN,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_SESSION_TOKEN,OPENAI_API_KEY,SUPABASE_SERVICE_KEY,SUPABASE_SERVICE_ROLE_KEY"
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "deny": []
+  },
+  "sandbox": {
+    "enabled": false,
+    "failIfUnavailable": false,
+    "autoAllowBashIfSandboxed": true,
+    "allowUnsandboxedCommands": true,
+    "_comment": "FULL TRUST since 2026-10-09 (the owner, proposal 58): agents have root on hqbox, every credential, writes anywhere, push and deploy; the six cage guards (credential-read, write-containment, bash-injection, secret-in-file, exfil, cdp-password) are unwired and permissions.deny is empty. The filesystem block below is inert history; network.allowedDomains still seeds the egress ledger, which logs and blocks nothing. Workflow hooks (verify gate, commit-branch, blanket-add, git switch, no-em-dash) stay. Revert: ops/proposals/58-full-trust-agents.md.",
+    "filesystem": {
+      "allowWrite": [
+        "~/hq",
+        "/tmp",
+        "~/.cache",
+        "~/.beads",
+        "~/.graphify",
+        "~/.npm",
+        "~/.local/share/pnpm",
+        "~/projects/fantasy-hq"
+      ],
+      "denyWrite": [
+        "~/hq/.claude/settings.json",
+        "~/hq/CLAUDE.md",
+        "~/hq/.claude/rules",
+        "~/hq/ops/githooks",
+        "~/hq/ops/scripts",
+        "~/hq/ops/templates",
+        "~/hq/ops/projects"
+      ],
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.gnupg",
+        "~/.config/gh",
+        "~/.git-credentials"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "github.com",
+        "codeload.github.com",
+        "raw.githubusercontent.com",
+        "objects.githubusercontent.com",
+        "registry.npmjs.org",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "ntfy.sh",
+        "mcp.context7.com",
+        "api.open-meteo.com",
+        "archive-api.open-meteo.com",
+        "*.supabase.co"
+      ],
+      "allowLocalBinding": true
+    }
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "WebSearch|WebFetch|Artifact|NotebookEdit|Agent|Task|Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-orchestrator-delegate.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-git-canonical-switch-guard.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-verify-gate.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-commit-branch-check.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-hq-blanket-add-guard.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-no-em-dash.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-no-em-dash.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-compact-suggest.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-egress-ledger.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-verify-record.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-push-tracker.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Artifact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-artifact-ledger.sh"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-notification.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bd prime --hook-json"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-session-register.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-postcompact-reinject.sh"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-precompact-snapshot.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-push-tracker.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-memory-promise.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-url-verification-gate.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/ops/scripts/hook-session-eval.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

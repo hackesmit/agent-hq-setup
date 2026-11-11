@@ -1,0 +1,21 @@
+{
+  "_doc": "Autonomy tier policy for security findings (hq-8cry.5), read by ops/security/route.sh; the rule itself is in .claude/rules/security-watch.md. classes come from the rig notes (CLAUDE.md Rigs table, .claude/rules/rigs/): money, auth, data and public rigs never auto-merge. live defaults to true, so a KEV or malicious package on any rig pages the owner. ledger rig = the rig's own bd ledger (it has an issue_prefix); hq = the hq ledger with label.",
+  "cooldown_days": 7,
+  "sensitive_classes": ["money", "auth", "data", "public", "unknown"],
+  "unknown_rig": {"ledger": "hq", "classes": ["unknown"], "live": true},
+  "rigs": {
+    "mediaco-media": {"ledger": "hq", "classes": ["public", "auth"]},
+    "studioco-digital": {"ledger": "hq", "classes": ["public"]},
+    "chesski": {"ledger": "rig", "classes": ["auth"]},
+    "company-chatbot-skill": {"ledger": "hq", "classes": ["public"]},
+    "fintrack-portfolio": {"ledger": "rig", "classes": ["money", "public"]},
+    "lodgeco-system": {"ledger": "hq", "classes": ["money", "data"]},
+    "gym-tracker": {"ledger": "rig", "classes": ["auth", "data", "public"]},
+    "hq": {"ledger": "hq", "classes": ["auth"]},
+    "hqbox": {"ledger": "hq", "classes": ["auth"]},
+    "peel": {"ledger": "hq", "classes": []},
+    "unfortunate-sports-resort": {"ledger": "hq", "label": "wr-vs-db", "classes": ["public"]},
+    "acme-avance": {"ledger": "hq", "classes": ["data", "public"]},
+    "acme-dashboard": {"ledger": "rig", "classes": ["data", "public"]}
+  }
+}

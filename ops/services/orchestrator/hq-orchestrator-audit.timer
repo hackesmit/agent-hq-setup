@@ -1,0 +1,11 @@
+# Daily on hqbox time (UTC); the owner's own time zone is an open ask (owner-facts.md r-3dbb7ed1). Install and revert: see the .service file.
+[Unit]
+Description=HQ orchestrator answer audit (daily 08:30 UTC)
+
+[Timer]
+OnCalendar=*-*-* 08:30:00
+Persistent=true
+Unit=hq-orchestrator-audit.service
+
+[Install]
+WantedBy=timers.target

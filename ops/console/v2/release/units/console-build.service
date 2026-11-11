@@ -1,0 +1,65 @@
+[Unit]
+# Builds one release from the credential-free local mirror that hub-sync keeps
+# at /var/lib/hqsync/mirrors/agent-hq.git (one bare mirror per repo, group
+# hqmirror). Nothing here ever reads ~/hq: the working tree is worker-writable,
+# so only reviewed, merged, pushed content is ever built.
+# Design: docs/superpowers/specs/2026-08-17-console-v2-design.md section 3.
+Description=HQ Console v2 release build
+Documentation=file:///home/owner/hq/ops/console/v2/release/README.md
+After=network-online.target
+Wants=network-online.target
+
+# On a clean build, hand off to the root activation oneshot. OnSuccess only
+# fires on exit 0, and build.sh exits 0 both when it built something new and
+# when the commit was already built, so activate.sh is the idempotent half: it
+# no-ops when the newest complete output is already current.
+OnSuccess=hq-console-activate.service
+
+[Service]
+Type=oneshot
+User=hqbuild
+Group=hqbuild
+WorkingDirectory=/var/lib/hqbuild
+
+# The build script is installed to /usr/local/lib/hq-console by provisioning,
+# root-owned and not writable by owner or hqbuild. Running it from ~/hq would
+# hand a caged worker the build user.
+ExecStart=/usr/local/lib/hq-console/build.sh --mirror /var/lib/hqsync/mirrors/agent-hq.git --ref main --out /var/lib/hqbuild/out
+
+# npm can be slow on a cold cache and node-pty is compiled here; a stuck build
+# must not sit forever holding the build lock.
+TimeoutStartSec=1800
+
+# NETWORK POLICY, phase 0: none. The builder reaches the npm registry and
+# nothing stops it reaching anything else. build.sh mitigates the realistic
+# risk instead (a pinned lockfile, --ignore-scripts so no package can run a
+# lifecycle command, an explicit --registry). A hard egress restriction
+# (IPAddressAllow= on the resolved registry set, or a slirp namespace) is
+# phase 1 hardening, tracked in release/README.md.
+
+# Ordinary hardening, safe here because the builder spawns nothing that needs
+# the host namespaces.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/hqbuild
+# The mirror is read-only to this unit by design: the builder must never be
+# able to change what it is about to build.
+ReadOnlyPaths=/var/lib/hqsync
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+LockPersonality=yes
+# node-pty is compiled here, so the toolchain needs a normal process
+# environment; MemoryDenyWriteExecute would break the compiler and the loaded
+# .node binding.
+MemoryDenyWriteExecute=no
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=console-build
+
+# No [Install] section on purpose: console-build.timer is the enabled unit, and
+# the Rebuild action in the Machines tab starts this service by hand. Enabling
+# the service itself would add a build to every boot for no reason.

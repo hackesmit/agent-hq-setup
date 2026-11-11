@@ -1,0 +1,7 @@
+# HQ-owned gitleaks config for the pre-push secret scan (hq-pgbpq.8).
+# Passed with --config so a .gitleaks.toml committed in the pushed range
+# cannot weaken or disable the scan. Uses the upstream default rules.
+title = "hq pre-push"
+
+[extend]
+useDefault = true

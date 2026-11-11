@@ -1,0 +1,20 @@
+{
+  "name": "hq-console-v2",
+  "private": true,
+  "version": "0.1.0",
+  "description": "HQ Console v2 monorepo root (server, web, shared). See docs/superpowers/specs/2026-08-17-console-v2-design.md",
+  "workspaces": [
+    "server",
+    "runner",
+    "web",
+    "shared"
+  ],
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "build": "npm run build -w web",
+    "test": "npm test -w server && npm test -w runner && npm test -w web",
+    "typecheck": "npm run typecheck -w web"
+  }
+}

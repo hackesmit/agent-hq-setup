@@ -1,0 +1,50 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${HQ_HOOK_DIR:-$HOME/hq/ops/scripts}/hook-commit-branch-check.sh\""
+          },
+          {
+            "type": "command",
+            "command": "\"${HQ_HOOK_DIR:-$HOME/hq/ops/scripts}/hook-no-em-dash.sh\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${HQ_HOOK_DIR:-$HOME/hq/ops/scripts}/hook-egress-ledger.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${HQ_HOOK_DIR:-$HOME/hq/ops/scripts}/hook-verify-record.sh\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${HQ_HOOK_DIR:-$HOME/hq/ops/scripts}/hook-session-eval.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

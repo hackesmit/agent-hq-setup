@@ -1,0 +1,6 @@
+# What the hqbox restic backup covers. One path per line.
+/srv
+/etc
+/home/owner
+/var/lib/hqconsole
+/var/lib/hqsync

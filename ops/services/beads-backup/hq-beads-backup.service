@@ -1,0 +1,7 @@
+[Unit]
+Description=HQ beads ledger daily Dolt backup
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/hq-beads-backup
+TimeoutStartSec=300

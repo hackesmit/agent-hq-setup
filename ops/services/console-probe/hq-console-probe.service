@@ -1,0 +1,7 @@
+[Unit]
+Description=HQ console listener probe, pushed to Uptime Kuma (hq-aukwy)
+
+[Service]
+Type=oneshot
+ExecStart=%h/hq/ops/services/console-probe/console-probe.sh
+TimeoutStartSec=30

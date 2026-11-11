@@ -1,0 +1,213 @@
+{
+  "_comment": "Dead-man cadence (hq-pgbpq.7). grace = seconds a timer's service may go without a Result=success exit before ONE alert (repeat daily). Every timer on the box must be here, in ignore, or match ignore_patterns. checked_by (default: scope) names which deadman run watches the entry. Read by ops/services/deadman/hq-deadman.sh.",
+  "timers": [
+    {
+      "timer": "plan-usage.timer",
+      "scope": "user",
+      "grace": 1800
+    },
+    {
+      "timer": "ob-sync-heartbeat.timer",
+      "scope": "user",
+      "grace": 1800
+    },
+    {
+      "timer": "hq-mail-poll.timer",
+      "scope": "user",
+      "grace": 3600
+    },
+    {
+      "timer": "hq-mail-drain.timer",
+      "scope": "user",
+      "grace": 3600
+    },
+    {
+      "timer": "hq-wake-resume.timer",
+      "scope": "user",
+      "grace": 3600
+    },
+    {
+      "timer": "hq-orchestrator.timer",
+      "scope": "user",
+      "grace": 172800
+    },
+    {
+      "timer": "hq-orchestrator-audit.timer",
+      "scope": "user",
+      "grace": 172800
+    },
+    {
+      "timer": "avance-guardia.timer",
+      "scope": "user",
+      "grace": 7200
+    },
+    {
+      "timer": "avance-promover.timer",
+      "scope": "user",
+      "grace": 10800
+    },
+    {
+      "timer": "avance-cartera.timer",
+      "scope": "user",
+      "grace": 64800
+    },
+    {
+      "timer": "hq-beads-backup.timer",
+      "scope": "user",
+      "grace": 129600
+    },
+    {
+      "timer": "hq-mail-digest.timer",
+      "scope": "user",
+      "grace": 129600
+    },
+    {
+      "timer": "hq-reaper.timer",
+      "scope": "user",
+      "grace": 691200
+    },
+    {
+      "timer": "hq-weekly-review.timer",
+      "scope": "user",
+      "grace": 691200
+    },
+    {
+      "timer": "hq-retro.timer",
+      "scope": "user",
+      "grace": 691200
+    },
+    {
+      "timer": "avance-correo-inicio.timer",
+      "scope": "user",
+      "grace": 691200
+    },
+    {
+      "timer": "hq-disk-health.timer",
+      "scope": "system",
+      "grace": 3600
+    },
+    {
+      "timer": "hq-restic-backup.timer",
+      "scope": "system",
+      "grace": 14400
+    },
+    {
+      "timer": "console-build.timer",
+      "scope": "system",
+      "grace": 3600
+    },
+    {
+      "timer": "hq-cert-renew.timer",
+      "scope": "system",
+      "grace": 691200
+    },
+    {
+      "timer": "hq-deadman.timer",
+      "scope": "user",
+      "checked_by": "system",
+      "grace": 3600
+    },
+    {
+      "timer": "hq-deadman-system.timer",
+      "scope": "system",
+      "checked_by": "user",
+      "grace": 3600
+    },
+    {
+      "timer": "hq-db-dump.timer",
+      "scope": "user",
+      "grace": 129600
+    },
+    {
+      "timer": "mail-watch.timer",
+      "scope": "user",
+      "grace": 1800
+    },
+    {
+      "timer": "hq-session-archive.timer",
+      "scope": "user",
+      "grace": 129600
+    }
+  ],
+  "ignore": [
+    {
+      "timer": "hq-drift-boot.timer",
+      "reason": "boot-only: runs once after boot, no cadence"
+    },
+    {
+      "timer": "launchpadlib-cache-clean.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "apport-autoreport.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "fwupd-refresh.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "sysstat-collect.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "sysstat-summary.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "apt-daily.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "apt-daily-upgrade.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "man-db.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "motd-news.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "update-notifier-download.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "update-notifier-motd.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "systemd-tmpfiles-clean.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "dpkg-db-backup.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "logrotate.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "e2scrub_all.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "fstrim.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "snapd.snap-repair.timer",
+      "reason": "distro/package timer, not ours"
+    },
+    {
+      "timer": "ua-timer.timer",
+      "reason": "distro/package timer, not ours"
+    }
+  ],
+  "ignore_patterns": [
+    "hq-wake-s-*.timer"
+  ]
+}

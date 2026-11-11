@@ -1,0 +1,5 @@
+# The token lives in %LOCALAPPDATA%\capri-hands on George, never here.
+token
+*.log
+*.jsonl
+__pycache__/

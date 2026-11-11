@@ -1,0 +1,25 @@
+{
+  "name": "HQ Console",
+  "short_name": "HQ",
+  "description": "Run the day: what needs you, who is working, what is ready to hand out.",
+  "start_url": "/now",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0a0d",
+  "theme_color": "#0a0a0d",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjI4IiBmaWxsPSIjMGEwYTBkIi8+PHJlY3QgeD0iMjYiIHk9IjI2IiB3aWR0aD0iNDYwIiBoZWlnaHQ9IjQ2MCIgcng9IjE0IiBmaWxsPSJub25lIiBzdHJva2U9IiNiMzg4ZmYiIHN0cm9rZS13aWR0aD0iMTAiLz48dGV4dCB4PSIyNTYiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InVpLW1vbm9zcGFjZSxtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTkwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjYjM4OGZmIj5IUTwvdGV4dD48L3N2Zz4=",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzBhMGEwZCIvPjx0ZXh0IHg9IjI1NiIgeT0iMzEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0idWktbW9ub3NwYWNlLG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNTAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNiMzg4ZmYiPkhRPC90ZXh0Pjwvc3ZnPg==",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

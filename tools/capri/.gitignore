@@ -1,0 +1,10 @@
+# George-only: the venv, the keyword model, the real config, logs, recordings, backups.
+venv/
+sherpa-onnx-*/
+capri.json
+*.bak*
+*.log
+*.wav
+out.txt
+err.txt
+__pycache__/

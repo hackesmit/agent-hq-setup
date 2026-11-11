@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+    a { color: #b388ff; } a:hover { color: #c9a9ff; }
+    .rs-state { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #8f8ca3; }
+    .rs-card { background: #111116; border: 1px solid #24242e; border-radius: 4px; }
+    .rs-row { display: grid; grid-template-columns: 18px 54px 148px 62px 82px minmax(0,1fr); gap: 10px; align-items: center; font-size: 12px; padding: 6px 0; }
+    .rs-chip { display: inline-block; border-radius: 2px; padding: 1px 6px; font-size: 11px; line-height: 20px; background: #1d1c27; color: #8f8ca3; }
+    .rs-note { font-size: 12px; color: #8f8ca3; text-wrap: pretty; }
+  </style>
+</helmet>
+
+<div style="width: 840px; box-sizing: border-box; background: #0a0a0d; color: #e8e6f0; font: 14px/1.45 'Cascadia Mono', 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; padding: 26px; display: flex; flex-direction: column; gap: 24px;">
+
+  <div>
+    <h1 style="margin: 0; font-size: 18px; font-weight: 600;">Rig Sigils</h1>
+    <p class="rs-note" style="margin: 8px 0 0; max-width: 64ch;">
+      A glyph and a hue derived from the project id, drawn everywhere the rig's name already appears. Shape carries
+      the identity and hue only reinforces it, so it survives colorblindness and high contrast. The text label never
+      goes away.
+    </p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div class="rs-state">the four rigs</div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;">
+
+      <div class="rs-card" style="padding: 14px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+        <svg width="48" height="48" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true">
+          <rect x="0" y="0" width="4" height="4" fill="#17171e"></rect>
+          <rect x="0" y="0" width="1" height="1" fill="#3fbfa8"></rect><rect x="3" y="0" width="1" height="1" fill="#3fbfa8"></rect>
+          <rect x="1" y="1" width="2" height="1" fill="#3fbfa8"></rect>
+          <rect x="0" y="2" width="1" height="1" fill="#3fbfa8"></rect><rect x="3" y="2" width="1" height="1" fill="#3fbfa8"></rect>
+          <rect x="1" y="3" width="2" height="1" fill="#3fbfa8"></rect>
+        </svg>
+        <div style="font-size: 11px; text-align: center; overflow-wrap: anywhere;">acme-dashboard</div>
+        <div style="font-size: 11px; color: #55536a;">hue 3 of 8</div>
+      </div>
+
+      <div class="rs-card" style="padding: 14px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+        <svg width="48" height="48" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true">
+          <rect x="0" y="0" width="4" height="4" fill="#17171e"></rect>
+          <rect x="1" y="0" width="2" height="4" fill="#e0a63a"></rect>
+          <rect x="0" y="1" width="4" height="2" fill="#e0a63a"></rect>
+        </svg>
+        <div style="font-size: 11px; text-align: center; overflow-wrap: anywhere;">gym-tracker</div>
+        <div style="font-size: 11px; color: #55536a;">hue 6 of 8</div>
+      </div>
+
+      <div class="rs-card" style="padding: 14px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+        <svg width="48" height="48" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true">
+          <rect x="0" y="0" width="4" height="4" fill="#17171e"></rect>
+          <rect x="0" y="0" width="1" height="1" fill="#5aa9f0"></rect><rect x="2" y="0" width="1" height="1" fill="#5aa9f0"></rect>
+          <rect x="1" y="1" width="1" height="1" fill="#5aa9f0"></rect><rect x="3" y="1" width="1" height="1" fill="#5aa9f0"></rect>
+          <rect x="0" y="2" width="1" height="1" fill="#5aa9f0"></rect><rect x="2" y="2" width="1" height="1" fill="#5aa9f0"></rect>
+          <rect x="1" y="3" width="1" height="1" fill="#5aa9f0"></rect><rect x="3" y="3" width="1" height="1" fill="#5aa9f0"></rect>
+        </svg>
+        <div style="font-size: 11px; text-align: center; overflow-wrap: anywhere;">chesski</div>
+        <div style="font-size: 11px; color: #55536a;">hue 1 of 8</div>
+      </div>
+
+      <div class="rs-card" style="padding: 14px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+        <svg width="48" height="48" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true">
+          <rect x="0" y="0" width="4" height="4" fill="#17171e"></rect>
+          <rect x="0" y="3" width="4" height="1" fill="#e06a9c"></rect>
+          <rect x="1" y="2" width="2" height="1" fill="#e06a9c"></rect>
+          <rect x="1" y="1" width="2" height="1" fill="#e06a9c"></rect>
+          <rect x="1" y="0" width="2" height="1" fill="#e06a9c"></rect>
+        </svg>
+        <div style="font-size: 11px; text-align: center; overflow-wrap: anywhere;">fintrack-portfolio</div>
+        <div style="font-size: 11px; color: #55536a;">hue 8 of 8</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="rs-state">sessions, with and without</div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+
+      <div class="rs-card" style="padding: 12px 14px;">
+        <div style="font-size: 11px; color: #55536a; margin-bottom: 6px;">with</div>
+        <div class="rs-row">
+          <svg width="14" height="14" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="1" height="1" fill="#3fbfa8"></rect><rect x="3" y="0" width="1" height="1" fill="#3fbfa8"></rect><rect x="1" y="1" width="2" height="1" fill="#3fbfa8"></rect><rect x="0" y="2" width="1" height="1" fill="#3fbfa8"></rect><rect x="3" y="2" width="1" height="1" fill="#3fbfa8"></rect><rect x="1" y="3" width="2" height="1" fill="#3fbfa8"></rect></svg>
+          <b>js-4</b><span style="color: #8f8ca3;">acme-dashboard</span><span class="rs-chip">xd-207</span><span class="rs-chip">opus-4-8</span><span style="color: #55536a;">running 40s</span>
+        </div>
+        <div class="rs-row">
+          <svg width="14" height="14" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="0" width="2" height="4" fill="#e0a63a"></rect><rect x="0" y="1" width="4" height="2" fill="#e0a63a"></rect></svg>
+          <b>js-7</b><span style="color: #8f8ca3;">gym-tracker</span><span class="rs-chip">gt-88</span><span class="rs-chip">opus-4-7</span><span style="color: #55536a;">waiting 12m</span>
+        </div>
+        <div class="rs-row">
+          <svg width="14" height="14" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="1" height="1" fill="#5aa9f0"></rect><rect x="2" y="0" width="1" height="1" fill="#5aa9f0"></rect><rect x="1" y="1" width="1" height="1" fill="#5aa9f0"></rect><rect x="3" y="1" width="1" height="1" fill="#5aa9f0"></rect><rect x="0" y="2" width="1" height="1" fill="#5aa9f0"></rect><rect x="2" y="2" width="1" height="1" fill="#5aa9f0"></rect><rect x="1" y="3" width="1" height="1" fill="#5aa9f0"></rect><rect x="3" y="3" width="1" height="1" fill="#5aa9f0"></rect></svg>
+          <b>js-9</b><span style="color: #8f8ca3;">chesski</span><span class="rs-chip">ch-19</span><span class="rs-chip">sonnet-5</span><span style="color: #55536a;">finishable 6m</span>
+        </div>
+        <div class="rs-row">
+          <svg width="14" height="14" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="3" width="4" height="1" fill="#e06a9c"></rect><rect x="1" y="2" width="2" height="1" fill="#e06a9c"></rect><rect x="1" y="1" width="2" height="1" fill="#e06a9c"></rect><rect x="1" y="0" width="2" height="1" fill="#e06a9c"></rect></svg>
+          <b>js-11</b><span style="color: #8f8ca3;">fintrack-portfolio</span><span class="rs-chip">dh-142</span><span class="rs-chip">opus-4-8</span><span style="color: #55536a;">running 2m</span>
+        </div>
+      </div>
+
+      <div class="rs-card" style="padding: 12px 14px;">
+        <div style="font-size: 11px; color: #55536a; margin-bottom: 6px;">today</div>
+        <div class="rs-row"><span></span><b>js-4</b><span style="color: #8f8ca3;">acme-dashboard</span><span class="rs-chip">xd-207</span><span class="rs-chip">opus-4-8</span><span style="color: #55536a;">running 40s</span></div>
+        <div class="rs-row"><span></span><b>js-7</b><span style="color: #8f8ca3;">gym-tracker</span><span class="rs-chip">gt-88</span><span class="rs-chip">opus-4-7</span><span style="color: #55536a;">waiting 12m</span></div>
+        <div class="rs-row"><span></span><b>js-9</b><span style="color: #8f8ca3;">chesski</span><span class="rs-chip">ch-19</span><span class="rs-chip">sonnet-5</span><span style="color: #55536a;">finishable 6m</span></div>
+        <div class="rs-row"><span></span><b>js-11</b><span style="color: #8f8ca3;">fintrack-portfolio</span><span class="rs-chip">dh-142</span><span class="rs-chip">opus-4-8</span><span style="color: #55536a;">running 2m</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+    <div class="rs-card" style="flex: 1; min-width: 300px; padding: 12px 14px;">
+      <div class="rs-state" style="margin-bottom: 8px;">on light paper</div>
+      <div style="background: #ffffff; border-radius: 2px; padding: 12px; display: flex; gap: 14px; align-items: center;">
+        <svg width="22" height="22" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="1" height="1" fill="#0f8f7d"></rect><rect x="3" y="0" width="1" height="1" fill="#0f8f7d"></rect><rect x="1" y="1" width="2" height="1" fill="#0f8f7d"></rect><rect x="0" y="2" width="1" height="1" fill="#0f8f7d"></rect><rect x="3" y="2" width="1" height="1" fill="#0f8f7d"></rect><rect x="1" y="3" width="2" height="1" fill="#0f8f7d"></rect></svg>
+        <svg width="22" height="22" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="0" width="2" height="4" fill="#b7791f"></rect><rect x="0" y="1" width="4" height="2" fill="#b7791f"></rect></svg>
+        <svg width="22" height="22" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="1" height="1" fill="#1d6fc0"></rect><rect x="2" y="0" width="1" height="1" fill="#1d6fc0"></rect><rect x="1" y="1" width="1" height="1" fill="#1d6fc0"></rect><rect x="3" y="1" width="1" height="1" fill="#1d6fc0"></rect><rect x="0" y="2" width="1" height="1" fill="#1d6fc0"></rect><rect x="2" y="2" width="1" height="1" fill="#1d6fc0"></rect><rect x="1" y="3" width="1" height="1" fill="#1d6fc0"></rect><rect x="3" y="3" width="1" height="1" fill="#1d6fc0"></rect></svg>
+        <svg width="22" height="22" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="3" width="4" height="1" fill="#b23a6b"></rect><rect x="1" y="2" width="2" height="1" fill="#b23a6b"></rect><rect x="1" y="1" width="2" height="1" fill="#b23a6b"></rect><rect x="1" y="0" width="2" height="1" fill="#b23a6b"></rect></svg>
+        <span style="font-size: 11px; color: #4a4658;">the ramp is picked per direction, never generated from raw HSL</span>
+      </div>
+    </div>
+
+    <div class="rs-card" style="flex: 1; min-width: 240px; padding: 12px 14px;">
+      <div class="rs-state" style="margin-bottom: 8px;">in high contrast</div>
+      <div style="background: #000; border: 1px solid #fff; border-radius: 2px; padding: 12px; display: flex; gap: 14px; align-items: center;">
+        <svg width="22" height="22" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="1" height="1" fill="#fff"></rect><rect x="3" y="0" width="1" height="1" fill="#fff"></rect><rect x="1" y="1" width="2" height="1" fill="#fff"></rect><rect x="0" y="2" width="1" height="1" fill="#fff"></rect><rect x="3" y="2" width="1" height="1" fill="#fff"></rect><rect x="1" y="3" width="2" height="1" fill="#fff"></rect></svg>
+        <svg width="22" height="22" viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="0" width="2" height="4" fill="#fff"></rect><rect x="0" y="1" width="4" height="2" fill="#fff"></rect></svg>
+        <span style="font-size: 11px; color: #fff;">shape still separates them</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":840,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

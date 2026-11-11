@@ -1,0 +1,18 @@
+# Snooze resume at boot (hq-1nkg.11): the hq-wake-<id> timers that snooze.sh creates are
+# transient, so a reboot drops them. Two minutes after boot this wakes every snoozed session
+# whose wake_at has passed and recreates the timer for the ones still in the future.
+# Install: ln -sfn ~/hq/ops/services/snooze-resume/hq-wake-resume.{service,timer} ~/.config/systemd/user/
+#          systemctl --user daemon-reload && systemctl --user enable --now hq-wake-resume.timer
+#          ~/hq/ops/services/failure-notify/install.sh
+# Revert:  systemctl --user disable --now hq-wake-resume.timer && rm ~/.config/systemd/user/hq-wake-resume.*
+[Unit]
+Description=HQ snooze resume at boot (wake overdue, reschedule future)
+After=tmux-hq.service
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=HQ_ROOT=%h/hq
+WorkingDirectory=%h/hq
+ExecStart=/bin/bash %h/hq/ops/scripts/wake-resume.sh
+TimeoutStartSec=300

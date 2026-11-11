@@ -1,0 +1,12 @@
+[Unit]
+Description=HQ archive of every Claude session transcript (append-only, /srv/session-archive)
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/hq-session-archive
+# hq-0yagv.3: rebuild the owner's decision record after each archive run (only on
+# success; a no-op until decision-record.py reaches the main checkout)
+ExecStartPost=/bin/sh -c 'test -f %h/hq/ops/scripts/decision-record.py || exit 0; exec /usr/bin/python3 %h/hq/ops/scripts/decision-record.py --refresh-george'
+TimeoutStartSec=1h
+Nice=10
+IOSchedulingClass=idle

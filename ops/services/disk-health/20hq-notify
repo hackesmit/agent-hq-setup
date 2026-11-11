@@ -1,0 +1,6 @@
+#!/bin/sh
+# smartd alert hook: forwards a SMART warning on hqbox's disk to the HQ notifier.
+# Installed to /etc/smartmontools/run.d/ and run by smartd-runner with the
+# SMARTD_* variables set. Canonical copy: ops/services/disk-health/ in the hq repo.
+sudo -u owner /home/owner/hq/ops/scripts/notify.sh urgent "hqbox disk warning" \
+  "${SMARTD_DEVICE:-disk}: ${SMARTD_FAILTYPE:-unknown} - ${SMARTD_MESSAGE:-no message}" || true

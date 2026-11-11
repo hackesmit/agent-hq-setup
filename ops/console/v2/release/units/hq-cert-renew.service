@@ -1,0 +1,37 @@
+[Unit]
+# Mints or renews the tailnet TLS certificate the console serves.
+# `tailscale cert` is a no-op when the cached certificate still has plenty of
+# life left, so this is safe to run at every boot and every week.
+Description=HQ Console v2 tailnet TLS certificate renewal
+Documentation=file:///home/owner/hq/ops/console/v2/release/README.md
+Requires=tailscaled.service
+After=tailscaled.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Root: `tailscale cert` needs the tailscaled LocalAPI, and the files land in
+# hqconsole's tree, which root can chown and hqconsole cannot escape.
+User=root
+Group=root
+
+# The certificate is issued for the MagicDNS name, because that is the name the
+# browser uses and the name the server enforces as Host. Writing straight to
+# the final paths is deliberate: tailscale writes them atomically, and the
+# server watches these two files and hot-reloads (design section 3).
+ExecStart=/usr/bin/tailscale cert --cert-file /var/lib/hqconsole/tls/cert.pem --key-file /var/lib/hqconsole/tls/key.pem hqbox.example.ts.net
+# tailscale writes them as root; the server runs as hqconsole and only ever
+# reads them. 0640 keeps the private key off every other account on the box.
+ExecStartPost=/usr/bin/chown hqconsole:hqconsole /var/lib/hqconsole/tls/cert.pem /var/lib/hqconsole/tls/key.pem
+ExecStartPost=/usr/bin/chmod 0640 /var/lib/hqconsole/tls/cert.pem /var/lib/hqconsole/tls/key.pem
+
+# A renewal that hangs on a network problem must not block the console unit
+# that is ordered After= it at boot.
+TimeoutStartSec=120
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hq-cert-renew
+
+# No [Install] section: pulled in by hq-console.service (Wants=) and driven by
+# hq-cert-renew.timer.

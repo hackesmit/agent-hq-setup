@@ -1,0 +1,41 @@
+# Monitoring stack on hqbox. Bead: hq (monitoring).
+#
+# Uptime Kuma: external service checks plus dead-man-switch push monitors for
+# scheduled jobs, alerting through the ntfy we already run. This is the piece
+# that turns a silent failure (Minecraft down after a reboot, a backup that
+# stopped running, ob-sync failing quietly) into a phone ping.
+#
+# EXPOSURE: bound to 127.0.0.1 only, never a bare port and never the tailnet
+# address. Loopback has no boot race (unlike the tailnet-address bind that
+# took Minecraft down), and reachability comes from `tailscale serve --https
+# 8443` layered on top, which is tailnet-only. The LAN and the internet see
+# nothing here. See README.md for the serve command.
+services:
+  uptime-kuma:
+    # 2.5.5 (2026-09-16) pinned by the manifest-list digest read from registry-1.docker.io
+    # on 2026-10-08 (hq-rvn6.8). 1.x is frozen upstream; 2.4.0 patched a LiquidJS RCE.
+    # Before `compose up`: stop the container and copy /srv/monitoring/uptime-kuma aside,
+    # the v2 migration rewrites the sqlite schema and badge/backup endpoints changed.
+    image: louislam/uptime-kuma:2.5.5@sha256:c74379ac4509ce2d2c2633f509e67003ee2e45b6e995c5e43fc101f45a0e1fbe
+    container_name: uptime-kuma
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:3001:3001"
+
+    volumes:
+      - /srv/monitoring/uptime-kuma:/app/data
+
+    deploy:
+      resources:
+        limits:
+          # Tiny footprint; it only makes outbound checks and serves a UI.
+          cpus: "1"
+          memory: "512M"
+
+    healthcheck:
+      test: ["CMD", "extra/healthcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

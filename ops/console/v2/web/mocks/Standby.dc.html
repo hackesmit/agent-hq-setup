@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+    a { color: #b388ff; } a:hover { color: #c9a9ff; }
+    .sb-plate { position: relative; width: 880px; height: 495px; box-sizing: border-box; background: #0a0a0d; border: 1px solid #24242e; border-radius: 4px; overflow: hidden; }
+    .sb-state { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #8f8ca3; }
+    .sb-corner { position: absolute; top: 16px; right: 20px; font-size: 12px; }
+    .sb-note { font-size: 12px; color: #8f8ca3; text-wrap: pretty; }
+  </style>
+</helmet>
+
+<div style="width: 940px; box-sizing: border-box; background: #0a0a0d; color: #e8e6f0; font: 14px/1.45 'Cascadia Mono', 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; padding: 26px; display: flex; flex-direction: column; gap: 22px;">
+
+  <div>
+    <h1 style="margin: 0; font-size: 18px; font-weight: 600;">Standby</h1>
+    <p class="sb-note" style="margin: 8px 0 0; max-width: 64ch;">
+      Four quiet minutes with nothing waiting and the console dims to this. It is read-only by construction: the
+      first touch anywhere is spent waking it, so a blind tap can never land on Kill or Finish underneath.
+    </p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="sb-state">quiet</div>
+    <div class="sb-plate">
+      <span class="sb-corner" style="color: #4fbf7a;">live</span>
+      <div style="position: absolute; left: 56px; top: 120px;">
+        <div style="font-size: 112px; line-height: 1; letter-spacing: -0.02em;">23:41</div>
+        <div style="margin-top: 26px; display: flex; flex-direction: column; gap: 8px; font-size: 26px; color: #8f8ca3;">
+          <span>4 live, 2 waiting</span>
+          <span>hqbox 31C, 22% CPU</span>
+          <span>184k tokens today</span>
+        </div>
+      </div>
+      <svg viewBox="0 0 880 60" preserveAspectRatio="none" style="position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 60px;" aria-hidden="true">
+        <path d="M0 52 L70 51 L140 49 L210 50 L280 34 L340 20 L400 33 L470 48 L540 50 L610 47 L660 26 L710 14 L760 30 L820 46 L880 49" fill="none" stroke="#b388ff" stroke-width="1" opacity="0.75"></path>
+      </svg>
+    </div>
+    <div class="sb-note">the last 24 hours of CPU along the bottom edge, one hairline. The block drifts a few pixels a minute against burn-in.</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="sb-state" style="color: #f0625c;">something needs you</div>
+    <div class="sb-plate" style="border-color: #f0625c; box-shadow: inset 0 0 0 1px rgba(240,98,92,0.5); background: radial-gradient(120% 90% at 50% 40%, rgba(240,98,92,0.10) 0%, #0a0a0d 70%);">
+      <span class="sb-corner" style="color: #4fbf7a;">live</span>
+      <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 28px; padding: 0 70px; text-align: center;">
+        <div style="font-size: 34px; line-height: 1.35; text-wrap: pretty;">
+          The tema preset changes the chart palette too. Keep the brand teal on charts, or follow the preset?
+        </div>
+        <div style="font-size: 17px; color: #8f8ca3;">acme-dashboard &nbsp; P0 &nbsp; asked 3m ago &nbsp; js-4 is blocked</div>
+        <button type="button" style="font: inherit; font-size: 18px; padding: 12px 56px; min-height: 48px; border-radius: 4px; border: 1px solid #b388ff; background: #b388ff; color: #0a0a0d;">Wake</button>
+      </div>
+    </div>
+    <div class="sb-note">one control, and it is not the answer. Answering happens on the real card, awake.</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="sb-state">the state that makes it trustworthy</div>
+    <div class="sb-plate">
+      <span class="sb-corner" style="color: #f0625c;">offline</span>
+      <div style="position: absolute; left: 56px; top: 120px;">
+        <div style="font-size: 112px; line-height: 1; letter-spacing: -0.02em; color: #8f8ca3;">23:47</div>
+        <div style="margin-top: 22px; font-size: 24px; color: #f0625c;">link down 4m, this is a picture, not the shop</div>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 26px; color: #55536a;">
+          <span>4 live, 2 waiting</span>
+          <span>hqbox 31C, 22% CPU</span>
+        </div>
+      </div>
+      <svg viewBox="0 0 880 60" preserveAspectRatio="none" style="position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 60px;" aria-hidden="true">
+        <path d="M0 50 L880 50" fill="none" stroke="#55536a" stroke-width="1"></path>
+      </svg>
+    </div>
+    <div class="sb-note">stale numbers are worse than none. When the socket is gone the plate says so and stops breathing.</div>
+  </div>
+
+  <div style="border-top: 1px solid #24242e; padding-top: 14px; display: flex; gap: 24px; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 220px;">
+      <div class="sb-state">entry</div>
+      <p class="sb-note" style="margin: 8px 0 0;">Never while a request is open. Never on a phone by default. Always exits on a new P0.</p>
+    </div>
+    <div style="flex: 1; min-width: 220px;">
+      <div class="sb-state">where the switch lives</div>
+      <div style="margin-top: 8px; display: inline-flex; gap: 6px; align-items: center; background: #111116; border: 1px solid #24242e; border-radius: 4px; padding: 6px 10px;">
+        <span style="font-size: 11px; color: #8f8ca3;">signal</span>
+        <span style="font-size: 11px; color: #55536a;">violet</span>
+        <span style="font-size: 11px; color: #55536a;">paper</span>
+        <span style="width: 1px; height: 14px; background: #24242e;"></span>
+        <span style="font-size: 11px; color: #b388ff;">standby: on</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":940,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

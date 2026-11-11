@@ -1,0 +1,16 @@
+# code-server on hqbox: the browser terminal for phones and any device.
+# Deployed to ~/.config/code-server/config.yaml by install.sh.
+#
+# SECURITY MODEL: bound to loopback only, exposed exclusively through
+# `tailscale serve` as https://hqbox.<tailnet>.ts.net. tailscale serve does
+# no user check, so any tailnet peer the ACL lets reach the box gets here:
+# tailnet membership is NOT authentication for an owner shell. code-server
+# therefore asks for a password. The password is never in this file or in
+# git: it comes from $PASSWORD in ~/.config/code-server/auth.env (mode 600,
+# created by install.sh), loaded by the unit drop-in hq-auth.conf. With no
+# password the unit refuses to start; it never falls back to auth none.
+# Never expose via `tailscale funnel` (that is public internet) and never
+# change the bind address: the LAN must keep seeing nothing on this port.
+bind-addr: 127.0.0.1:8080
+auth: password
+cert: false

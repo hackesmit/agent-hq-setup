@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# core.hooksPath replaces .git/hooks entirely; chain to the repo's own
+# post-checkout (graphify worktree rebuild) so it keeps firing.
+legacy="$(git rev-parse --git-common-dir)/hooks/post-checkout"
+[ -x "$legacy" ] && exec "$legacy" "$@"
+exit 0

@@ -1,0 +1,17 @@
+{
+  "name": "@hq/console-runner",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/runner.js",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node src/runner.js",
+    "test": "node --test \"test/**/*.test.js\""
+  },
+  "dependencies": {
+    "node-pty": "1.1.0"
+  }
+}

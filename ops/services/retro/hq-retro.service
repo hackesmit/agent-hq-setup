@@ -1,0 +1,20 @@
+# Weekly retro (hq-fgg3.2): ops/scripts/retro.sh runs the audit-bead sweep
+# (keep-or-revert of egress-ledger / session-eval beads) and then a headless
+# claude retro from ops/templates/retro.md. Until 2026-10-19 nothing scheduled
+# it, so the last retro was 2026-07-13.
+# Install: ln -sfn ~/hq/ops/services/retro/hq-retro.{service,timer} ~/.config/systemd/user/
+#          systemctl --user daemon-reload && systemctl --user enable --now hq-retro.timer
+# Revert:  systemctl --user disable --now hq-retro.timer && rm ~/.config/systemd/user/hq-retro.*
+[Unit]
+Description=HQ weekly retro (audit-bead sweep plus headless claude retro, Fridays)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+WorkingDirectory=%h/hq
+ExecStart=/bin/bash %h/hq/ops/scripts/retro.sh
+ExecStartPost=-/bin/bash %h/hq/ops/scripts/session-eval-weekly.sh
+TimeoutStartSec=3600
+TimeoutStopSec=30

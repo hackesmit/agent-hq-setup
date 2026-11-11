@@ -1,0 +1,11 @@
+# Every 2 minutes: the 5 h window moves fast enough that a staler number misleads.
+[Unit]
+Description=HQ plan usage every 2 minutes
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=2min
+Unit=plan-usage.service
+
+[Install]
+WantedBy=timers.target
